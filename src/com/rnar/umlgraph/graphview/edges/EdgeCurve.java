@@ -2,6 +2,8 @@ package com.rnar.umlgraph.graphview.edges;
 
 import com.rnar.umlgraph.graphview.arrows.DefaultArrow;
 import com.rnar.umlgraph.graphview.*;
+import com.rnar.umlgraph.graphview.utils.UtilitiesBindings;
+import com.rnar.umlgraph.graphview.utils.UtilitiesPoint2D;
 import com.rnar.umlgraph.graphview.vertices.GraphVertex;
 import com.rnar.umlgraph.graphview.vertices.GraphVertexPaneNode;
 import com.rnar.umlgraph.graphview.labels.Label;

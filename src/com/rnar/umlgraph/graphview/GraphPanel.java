@@ -23,6 +23,7 @@ import com.rnar.umlgraph.graphview.edges.EdgeCurve;
 import com.rnar.umlgraph.graphview.edges.EdgeLine;
 import com.rnar.umlgraph.graphview.strategy.PlacementStrategy;
 import com.rnar.umlgraph.graphview.strategy.RandomPlacementStrategy;
+import com.rnar.umlgraph.graphview.utils.UtilitiesPoint2D;
 import com.rnar.umlgraph.graphview.vertices.GraphVertex;
 import com.rnar.umlgraph.graphview.vertices.GraphVertexPaneNode;
 import com.rnar.umlgraph.graphview.labels.Label;
@@ -44,7 +45,7 @@ import com.rnar.umlgraph.graph.Graph;
 import com.rnar.umlgraph.graph.Digraph;
 import com.rnar.umlgraph.graph.Vertex;
 
-import static com.rnar.umlgraph.graphview.UtilitiesJavaFX.pick;
+import static com.rnar.umlgraph.graphview.utils.UtilitiesJavaFX.pick;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

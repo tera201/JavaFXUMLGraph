@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.rnar.umlgraph.graphview.vertices.GraphVertex;
-import com.rnar.umlgraph.graphview.UtilitiesPoint2D;
+import com.rnar.umlgraph.graphview.utils.UtilitiesPoint2D;
 import javafx.geometry.Point2D;
 import com.rnar.umlgraph.graph.Graph;
 
