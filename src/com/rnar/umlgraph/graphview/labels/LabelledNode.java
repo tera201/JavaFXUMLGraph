@@ -1,4 +1,4 @@
-package com.rnar.umlgraph.labels;
+package com.rnar.umlgraph.graphview.labels;
 
 /**
  * A node to which a {@link Label} can be attached.

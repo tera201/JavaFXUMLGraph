@@ -4,7 +4,7 @@ import com.rnar.umlgraph.graphview.arrows.DefaultArrow;
 import com.rnar.umlgraph.graphview.*;
 import com.rnar.umlgraph.graphview.vertices.GraphVertex;
 import com.rnar.umlgraph.graphview.vertices.GraphVertexPaneNode;
-import com.rnar.umlgraph.labels.Label;
+import com.rnar.umlgraph.graphview.labels.Label;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.CubicCurve;

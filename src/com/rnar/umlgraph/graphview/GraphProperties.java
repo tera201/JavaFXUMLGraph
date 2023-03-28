@@ -3,7 +3,7 @@ package com.rnar.umlgraph.graphview;
 import com.rnar.umlgraph.graphview.arrows.DefaultArrow;
 import com.rnar.umlgraph.graphview.edges.Edge;
 import com.rnar.umlgraph.graphview.vertices.GraphVertex;
-import com.rnar.umlgraph.labels.Label;
+import com.rnar.umlgraph.graphview.labels.Label;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;

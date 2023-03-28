@@ -3,7 +3,7 @@ package com.rnar.umlgraph.graphview.vertices;
 
 import com.rnar.umlgraph.graphview.GraphPanel;
 import com.rnar.umlgraph.graphview.StylableNode;
-import com.rnar.umlgraph.labels.LabelledNode;
+import com.rnar.umlgraph.graphview.labels.LabelledNode;
 import javafx.geometry.Point2D;
 
 import java.util.Collection;

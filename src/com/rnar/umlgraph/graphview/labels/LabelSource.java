@@ -1,4 +1,4 @@
-package com.rnar.umlgraph.labels;
+package com.rnar.umlgraph.graphview.labels;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

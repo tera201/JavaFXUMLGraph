@@ -2,7 +2,7 @@ package com.rnar.umlgraph.graphview.edges;
 
 import com.rnar.umlgraph.graphview.arrows.DefaultArrow;
 import com.rnar.umlgraph.graphview.GraphPanel;
-import com.rnar.umlgraph.labels.LabelledNode;
+import com.rnar.umlgraph.graphview.labels.LabelledNode;
 
 /**
  * Used as a super-type for all different concrete edge implementations by

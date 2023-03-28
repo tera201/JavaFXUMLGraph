@@ -1,4 +1,4 @@
-package com.rnar.umlgraph.labels;
+package com.rnar.umlgraph.graphview.labels;
 
 import com.rnar.umlgraph.graphview.StylableNode;
 import com.rnar.umlgraph.graphview.StyleProxy;
