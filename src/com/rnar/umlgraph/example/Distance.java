@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.example;
 
-import com.rnar.umlgraph.graphview.SmartLabelSource;
+import com.rnar.umlgraph.labels.LabelSource;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Distance {
         this.distance = distance;
     }
     
-    @SmartLabelSource
+    @LabelSource
     public String getDisplayDistance() {
         /* If the above annotation is not present, the toString()
         will be used as the edge label. */

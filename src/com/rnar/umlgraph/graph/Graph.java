@@ -1,7 +1,7 @@
 package com.rnar.umlgraph.graph;
 
-import com.rnar.umlgraph.Elements.ElementTypes;
-import com.rnar.umlgraph.arrows.ArrowTypes;
+import com.rnar.umlgraph.graphview.vertices.elements.ElementTypes;
+import com.rnar.umlgraph.graphview.arrows.ArrowTypes;
 
 import java.util.Collection;
 

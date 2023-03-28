@@ -4,23 +4,23 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.rnar.umlgraph.Elements.ElementTypes;
-import com.rnar.umlgraph.arrows.ArrowTypes;
-import com.rnar.umlgraph.graphview.SmartGraphPanel;
+import com.rnar.umlgraph.graphview.vertices.elements.ElementTypes;
+import com.rnar.umlgraph.graphview.arrows.ArrowTypes;
+import com.rnar.umlgraph.graphview.GraphPanel;
 import com.rnar.umlgraph.graph.Vertex;
 import com.rnar.umlgraph.graph.Graph;
 import com.rnar.umlgraph.graph.GraphEdgeList;
-import com.rnar.umlgraph.containers.SmartGraphDemoContainer;
+import com.rnar.umlgraph.containers.GraphDemoContainer;
 import com.rnar.umlgraph.graph.DigraphEdgeList;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import com.rnar.umlgraph.graphview.SmartPlacementStrategy;
+import com.rnar.umlgraph.graphview.strategy.PlacementStrategy;
 import com.rnar.umlgraph.graph.Digraph;
-import com.rnar.umlgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.rnar.umlgraph.graphview.SmartGraphVertex;
-import com.rnar.umlgraph.graphview.SmartStylableNode;
+import com.rnar.umlgraph.graphview.strategy.CircularSortedPlacementStrategy;
+import com.rnar.umlgraph.graphview.vertices.GraphVertex;
+import com.rnar.umlgraph.graphview.StylableNode;
 
 /**
  *
@@ -37,9 +37,9 @@ public class Main extends Application {
         //Graph<String, String> g = build_flower_graph();
         System.out.println(g);
         
-        SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
+        PlacementStrategy strategy = new CircularSortedPlacementStrategy();
         //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-        SmartGraphPanel<String, String> graphView = new SmartGraphPanel<>(g, strategy);
+        GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
 
         /*
         After creating, you can change the styling of some element.
@@ -54,7 +54,7 @@ public class Main extends Application {
         Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
         */
         //Scene scene = new Scene(graphView, 1024, 768);
-        Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
+        Scene scene = new Scene(new GraphDemoContainer(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX SmartGraph Visualization");
@@ -72,7 +72,7 @@ public class Main extends Application {
         /*
         Bellow you can see how to attach actions for when vertices and edges are double clicked
          */        
-        graphView.setVertexDoubleClickAction((SmartGraphVertex<String> graphVertex) -> {
+        graphView.setVertexDoubleClickAction((GraphVertex<String> graphVertex) -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
                       
             //toggle different styling
@@ -195,7 +195,7 @@ public class Main extends Application {
 
     private static final Random random = new Random(/* seed to reproduce*/);
 
-    private void continuously_test_adding_elements(Graph<String, String> g, SmartGraphPanel<String, String> graphView) {
+    private void continuously_test_adding_elements(Graph<String, String> g, GraphPanel<String, String> graphView) {
         //update graph
         running = true;
         final long ITERATION_WAIT = 3000; //milliseconds
@@ -231,7 +231,7 @@ public class Main extends Application {
                     graphView.updateAndWait();
                     
                     //color new vertices
-                    SmartStylableNode stylableVertex = graphView.getStylableVertex(vertexId);
+                    StylableNode stylableVertex = graphView.getStylableVertex(vertexId);
                     if(stylableVertex != null) {
                         stylableVertex.setStyle("-fx-fill: orange;");
                     }

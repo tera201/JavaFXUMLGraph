@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.example;
 
-import com.rnar.umlgraph.graphview.SmartLabelSource;
+import com.rnar.umlgraph.labels.LabelSource;
 
 /**
  *
@@ -15,7 +15,7 @@ public class City {
         this.population = age;
     }
 
-    @SmartLabelSource
+    @LabelSource
     public String getName() {
         return name;
     }

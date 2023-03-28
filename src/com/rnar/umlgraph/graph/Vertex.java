@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.graph;
 
-import com.rnar.umlgraph.Elements.ElementTypes;
+import com.rnar.umlgraph.graphview.vertices.elements.ElementTypes;
 
 /**
  * A vertex contains an element of type <code>V</code> and is used both in

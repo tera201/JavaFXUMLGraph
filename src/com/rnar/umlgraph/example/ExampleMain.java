@@ -1,12 +1,12 @@
 package com.rnar.umlgraph.example;
 
-import com.rnar.umlgraph.containers.SmartGraphDemoContainer;
+import com.rnar.umlgraph.containers.GraphDemoContainer;
 import com.rnar.umlgraph.graph.Graph;
 import com.rnar.umlgraph.graph.GraphEdgeList;
 import com.rnar.umlgraph.graph.Vertex;
-import com.rnar.umlgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.rnar.umlgraph.graphview.SmartGraphPanel;
-import com.rnar.umlgraph.graphview.SmartGraphProperties;
+import com.rnar.umlgraph.graphview.strategy.CircularSortedPlacementStrategy;
+import com.rnar.umlgraph.graphview.GraphPanel;
+import com.rnar.umlgraph.graphview.GraphProperties;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -42,11 +42,11 @@ public class ExampleMain extends Application {
         /* Only Java 15 allows for multi-line strings */
         String customProps = "edge.label = true" + "\n" + "edge.arrow = false";
                 
-        SmartGraphProperties properties = new SmartGraphProperties(customProps);
+        GraphProperties properties = new GraphProperties(customProps);
         
-        SmartGraphPanel<City, Distance> graphView = new SmartGraphPanel<>(distances, properties, new SmartCircularSortedPlacementStrategy());
+        GraphPanel<City, Distance> graphView = new GraphPanel<>(distances, properties, new CircularSortedPlacementStrategy());
         
-        Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
+        Scene scene = new Scene(new GraphDemoContainer(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX SmartGraph City Distances");

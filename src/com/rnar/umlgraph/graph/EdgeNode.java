@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.graph;
 
-import com.rnar.umlgraph.arrows.ArrowTypes;
+import com.rnar.umlgraph.graphview.arrows.ArrowTypes;
 
 public class EdgeNode<E, V>  implements Edge<E, V> {
 

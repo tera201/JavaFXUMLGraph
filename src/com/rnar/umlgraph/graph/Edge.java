@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.graph;
 
-import com.rnar.umlgraph.arrows.ArrowTypes;
+import com.rnar.umlgraph.graphview.arrows.ArrowTypes;
 
 /**
  * An edge connects two {@link Vertex} of type <code>V</code> and stores

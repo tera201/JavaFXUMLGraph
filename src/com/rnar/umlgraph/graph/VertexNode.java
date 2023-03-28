@@ -1,6 +1,6 @@
 package com.rnar.umlgraph.graph;
 
-import com.rnar.umlgraph.Elements.ElementTypes;
+import com.rnar.umlgraph.graphview.vertices.elements.ElementTypes;
 
 public class VertexNode<V> implements Vertex<V> {
 
