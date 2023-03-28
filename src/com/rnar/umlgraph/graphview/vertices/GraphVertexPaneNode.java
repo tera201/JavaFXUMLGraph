@@ -45,12 +45,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
     private Label attachedLabel = null;
     private boolean isDragging = false;
 
-    private Rectangle funct = null;
-
-    private Rectangle classRec = null;
-
-    private Rectangle main = null;
-
     /*
     Automatic layout functionality members
      */
