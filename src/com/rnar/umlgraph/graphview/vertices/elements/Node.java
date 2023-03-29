@@ -42,7 +42,7 @@ public class Node<T> implements Element {
 
         this.main = new Rectangle(0, 0);
         label.widthProperty().addListener((obs, oldVal, newVal) -> {
-            this.main.setWidth(newVal.doubleValue() + this.main.getStrokeWidth() * 4 + this.paneElement.getWidth());
+            this.main.setWidth(newVal.doubleValue() + this.main.getStrokeWidth() * 6 + this.paneElement.getWidth());
         });
 
         label.heightProperty().addListener((obs, oldVal, newVal) -> {
