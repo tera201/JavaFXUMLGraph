@@ -72,7 +72,7 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
         this.underlyingVertex = v;
         this.attachedLabel = null;
         this.isDragging = false;
-        this.nodeElement = new Node<>("game.Square", v);
+        this.nodeElement = new Node<>(v);
 
 
         nodeElement.addTo(this);

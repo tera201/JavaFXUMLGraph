@@ -4,7 +4,6 @@ import com.rnar.umlgraph.graph.Vertex;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 
 public class Node<T> implements Element {
 
@@ -16,8 +15,8 @@ public class Node<T> implements Element {
 
     private ElementTypes elementTypes = ElementTypes.CLASS;
 
-    public Node(String name, Vertex<T> v) {
-        this.label = new Label(name);
+    public Node(Vertex<T> v) {
+        this.label = new Label(v.element().toString());
         this.elementTypes = v.getType();
         switch (elementTypes) {
             case ENUM -> paneElement = new Enumerations();
@@ -29,6 +28,11 @@ public class Node<T> implements Element {
         init();
     }
 
+    public Node(String name, Vertex<T> v) {
+        this(v);
+        this.label.setText(name);
+    }
+
     public Node(String name, PaneElement paneElement) {
         this.label = new Label(name);
         this.paneElement = paneElement;
@@ -36,7 +40,7 @@ public class Node<T> implements Element {
     }
 
     private void init(){
-        label.setFont(new Font("Arial", 30));
+        label.getStyleClass().add("node-label");
         label.setLayoutX(0);
         label.setLayoutY(0);
 
@@ -102,9 +106,8 @@ public class Node<T> implements Element {
     }
     @Override
     public boolean removeStyleClass(String cssClass) {
-        boolean ans = this.main.getStyleClass().remove(cssClass) &&
+        return this.main.getStyleClass().remove(cssClass) &&
                 this.paneElement.removeStyleClass(cssClass);
-        return ans;
     }
 
 }
