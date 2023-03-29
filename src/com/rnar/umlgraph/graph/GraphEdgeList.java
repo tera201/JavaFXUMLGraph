@@ -140,6 +140,19 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
+    public synchronized Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String notes) throws InvalidVertexException {
+        if (existsVertexWith(vElement)) {
+            throw new InvalidVertexException("There's already a vertex with this element.");
+        }
+
+        VertexNode<V> newVertex = new VertexNode<V>(vElement, elementTypes, notes);
+
+        vertices.put(vElement, newVertex);
+
+        return newVertex;
+    }
+
+    @Override
     public synchronized Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement, ArrowTypes arrowTypes)
             throws InvalidVertexException, InvalidEdgeException {
 

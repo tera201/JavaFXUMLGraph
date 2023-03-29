@@ -115,6 +115,9 @@ public interface Graph<V, E> {
     public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes)
             throws InvalidVertexException;
 
+    public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String notes)
+            throws InvalidVertexException;
+
     /**
      * Inserts a new edge with a given element between two existing vertices and
      * return its (the edge's) reference.

@@ -128,7 +128,7 @@ public class Main extends Application {
 
         Digraph<String, String> g = new DigraphEdgeList<>();
 
-        g.insertVertex("A", ElementTypes.PACKAGE);
+        g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
         g.insertVertex("B", ElementTypes.INTERFACE);
         g.insertVertex("C", ElementTypes.COMPONENT);
         g.insertVertex("D", ElementTypes.ENUM);

@@ -491,7 +491,7 @@ public class GraphPanel<V, E> extends Pane {
 
         // add pop-up property
         if (graphProperties.getUseVertexTooltip()) {
-            Tooltip t = new Tooltip(labelText);
+            Tooltip t = new Tooltip(v.getUnderlyingVertex().getNotes());
             Tooltip.install(v, t);
         }
 

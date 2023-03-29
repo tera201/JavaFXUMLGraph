@@ -23,4 +23,6 @@ public interface Vertex<V> {
     public V element();
 
     public ElementTypes getType();
+
+    public String getNotes();
 }

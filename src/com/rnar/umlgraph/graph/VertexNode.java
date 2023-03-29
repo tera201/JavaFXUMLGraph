@@ -6,6 +6,7 @@ public class VertexNode<V> implements Vertex<V> {
 
     V element;
     ElementTypes elementTypes;
+    String notes = "";
 
     public VertexNode(V element) {
         this.element = element;
@@ -17,6 +18,11 @@ public class VertexNode<V> implements Vertex<V> {
         this.elementTypes = elementTypes;
     }
 
+    public VertexNode(V element, ElementTypes elementTypes, String notes) {
+        this(element, elementTypes);
+        this.notes = notes;
+    }
+
     @Override
     public V element() {
         return this.element;
@@ -25,6 +31,11 @@ public class VertexNode<V> implements Vertex<V> {
     @Override
     public ElementTypes getType() {
         return this.elementTypes;
+    }
+
+    @Override
+    public String getNotes() {
+        return this.notes;
     }
 
     @Override

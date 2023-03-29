@@ -186,6 +186,19 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
     }
 
     @Override
+    public synchronized Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String notes) throws InvalidVertexException {
+        if (existsVertexWith(vElement)) {
+            throw new InvalidVertexException("There's already a vertex with this element.");
+        }
+
+        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, notes);
+
+        vertices.put(vElement, newVertex);
+
+        return newVertex;
+    }
+
+    @Override
     public synchronized V removeVertex(Vertex<V> v) throws InvalidVertexException {
         checkVertex(v);
 
