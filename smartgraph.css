@@ -80,6 +80,10 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
     -fx-font: normal 5pt "sans-serif";
 }
 
+.node-label {
+    -fx-font: normal 15pt "Arial";
+}
+
 .arrow-white {
     -fx-stroke-width: 1;
     -fx-stroke: #000000;
