@@ -5,10 +5,7 @@ import umlgraph.graphview.edges.Edge;
 import umlgraph.graphview.labels.Label;
 import umlgraph.graphview.vertices.GraphVertex;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,7 +65,10 @@ public class GraphProperties {
         properties = new Properties();
         
         try {
-            properties.load(new FileInputStream(DEFAULT_FILE));
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(classLoader.getResource(DEFAULT_FILE).getFile());
+            InputStream inputStream = new FileInputStream(file);
+            properties.load(inputStream);
         } catch (IOException ex) {
             String msg = String.format("The default %s was not found. Using default values.", DEFAULT_FILE);
             Logger.getLogger(GraphProperties.class.getName()).log(Level.WARNING, msg);

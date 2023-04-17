@@ -1075,8 +1075,9 @@ public class GraphPanel<V, E> extends Pane {
             if( cssFile != null ) {
                 css = cssFile.toURL().toExternalForm();
             } else {
-                File f = new File("smartgraph.css");
-                css = f.toURI().toURL().toExternalForm();
+                ClassLoader classLoader = getClass().getClassLoader();
+                File file = new File(classLoader.getResource("smartgraph.css").getFile());
+                css = file.toURI().toURL().toExternalForm();
             }
 
             getStylesheets().add(css);
