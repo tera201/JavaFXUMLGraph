@@ -1,8 +1,8 @@
 package umlgraph.graphview;
 
 
-import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1076,14 +1076,15 @@ public class GraphPanel<V, E> extends Pane {
                 css = cssFile.toURL().toExternalForm();
             } else {
                 ClassLoader classLoader = getClass().getClassLoader();
-                File file = new File(classLoader.getResource("smartgraph.css").getFile());
-                css = file.toURI().toURL().toExternalForm();
+                css = classLoader.getResource("smartgraph.css").toURI().toURL().toExternalForm();
             }
 
             getStylesheets().add(css);
             this.getStyleClass().add("graph");
         } catch (MalformedURLException ex) {
             Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 

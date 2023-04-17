@@ -66,11 +66,10 @@ public class GraphProperties {
         
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource(DEFAULT_FILE).getFile());
-            InputStream inputStream = new FileInputStream(file);
+            InputStream inputStream = classLoader.getResourceAsStream(DEFAULT_FILE);
             properties.load(inputStream);
         } catch (IOException ex) {
-            String msg = String.format("The default %s was not found. Using default values.", DEFAULT_FILE);
+            String msg = String.format("The default %s was not found. Using default values. %s", DEFAULT_FILE, ex);
             Logger.getLogger(GraphProperties.class.getName()).log(Level.WARNING, msg);
         }
     }
