@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.beans.property.Property;
 import umlgraph.graph.Vertex;
 import umlgraph.graphview.arrows.DefaultArrow;
 import umlgraph.graphview.arrows.DiamondArrow;
@@ -359,6 +360,25 @@ public class GraphPanel<V, E> extends Pane {
             updateNodes();
         }
 
+    }
+
+    public void resetPlaceStrategy() {
+        if (placementStrategy != null) {
+            // call strategy to place the vertices in their initial locations
+            placementStrategy.place(this.widthProperty().doubleValue(),
+                    this.heightProperty().doubleValue(),
+                    this.theGraph,
+                    this.vertexNodes.values());
+        } else {
+            //apply random placement
+            new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
+                    this.heightProperty().doubleValue(),
+                    this.theGraph,
+                    this.vertexNodes.values());
+
+            //start automatic layout
+            timer.start();
+        }
     }
 
     private synchronized void updateNodes() {

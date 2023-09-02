@@ -1,5 +1,6 @@
 package umlgraph.containers;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -19,9 +20,12 @@ public class GraphDemoContainer extends BorderPane {
         HBox bottom = new HBox(10);
         
         CheckBox automatic = new CheckBox("Automatic layout");
+        Button resetPlaceButton = new Button("Reset places");
         automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
+        resetPlaceButton.setOnAction(e -> graphView.resetPlaceStrategy());
         
         bottom.getChildren().add(automatic);
+        bottom.getChildren().add(resetPlaceButton);
         
         setBottom(bottom);        
     }
