@@ -34,9 +34,9 @@ public class ContentZoomPane extends BorderPane {
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Node content;
 
-    private static final double MIN_SCALE = 1;
+    private static final double MIN_SCALE = 0.2;
     private static final double MAX_SCALE = 5;
-    private static final double SCROLL_DELTA = 0.25;
+    private static final double SCROLL_DELTA = 0.05;
 
     public ContentZoomPane(Node content) {
         if (content == null) {
@@ -61,6 +61,7 @@ public class ContentZoomPane extends BorderPane {
         slider.setShowTickMarks(true);
         slider.setShowTickLabels(true);
         slider.setMajorTickUnit(SCROLL_DELTA);
+        slider.setPrefHeight(200);
         slider.setMinorTickCount(1);
         slider.setBlockIncrement(0.125f);
         slider.setSnapToTicks(true);
@@ -72,7 +73,13 @@ public class ContentZoomPane extends BorderPane {
         paneSlider.setPadding(new Insets(10, 10, 10, 10));
         paneSlider.setSpacing(10);
 
-        slider.valueProperty().bind(this.scaleFactorProperty());
+        slider.valueProperty().bindBidirectional(this.scaleFactorProperty());
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            double scale = newValue.doubleValue();
+            content.setScaleX(scale);
+            content.setScaleY(scale);
+            scaleFactorProperty.setValue(scale);
+        });
 
         return paneSlider;
     }
@@ -111,10 +118,10 @@ public class ContentZoomPane extends BorderPane {
                 content.setScaleX(computedScale);
                 content.setScaleY(computedScale);
 
-                if (computedScale == 1) {
-                    content.setTranslateX(-getTranslateX());
-                    content.setTranslateY(-getTranslateY());
-                } else {
+//                if (computedScale == 1) {
+//                    content.setTranslateX(-getTranslateX());
+//                    content.setTranslateY(-getTranslateY());
+//                } else {
                     scaleFactorProperty.setValue(computedScale);
 
                     Bounds bounds = content.localToScene(content.getBoundsInLocal());
@@ -123,7 +130,7 @@ public class ContentZoomPane extends BorderPane {
                     double dy = (event.getY() - (bounds.getHeight() / 2 + bounds.getMinY()));
 
                     setContentPivot(f * dx, f * dy);
-                }
+//                }
 
             }
             //do not propagate
@@ -135,7 +142,7 @@ public class ContentZoomPane extends BorderPane {
 
         setOnMousePressed((MouseEvent event) -> {
 
-            if (event.isSecondaryButtonDown()) {
+            if (event.isPrimaryButtonDown()) {
                 getScene().setCursor(Cursor.MOVE);
 
                 sceneDragContext.mouseAnchorX = event.getX();
@@ -152,8 +159,8 @@ public class ContentZoomPane extends BorderPane {
         });
 
         setOnMouseDragged((MouseEvent event) -> {
-            if (event.isSecondaryButtonDown()) {
-                
+            if (event.isPrimaryButtonDown()) {
+
                 content.setTranslateX(sceneDragContext.translateAnchorX + event.getX() - sceneDragContext.mouseAnchorX);
                 content.setTranslateY(sceneDragContext.translateAnchorY + event.getY() - sceneDragContext.mouseAnchorY);
             }

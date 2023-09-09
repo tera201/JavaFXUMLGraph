@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.beans.property.Property;
+import javafx.collections.ListChangeListener;
 import umlgraph.graph.Vertex;
 import umlgraph.graphview.arrows.DefaultArrow;
 import umlgraph.graphview.arrows.DiamondArrow;
@@ -83,7 +84,7 @@ public class GraphPanel<V, E> extends Pane {
     /*
     INTERNAL DATA STRUCTURE
      */
-    private final Graph<V, E> theGraph;
+    private Graph<V, E> theGraph;
     private final PlacementStrategy placementStrategy;
     private final Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes;
     private final Map<umlgraph.graph.Edge<E, V>, EdgeBase> edgeNodes;
@@ -255,19 +256,40 @@ public class GraphPanel<V, E> extends Pane {
             placementStrategy.place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
         } else {
             //apply random placement
             new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
 
             //start automatic layout
             timer.start();
         }
 
+        this.getChildren().addListener((ListChangeListener<Node>) c -> {
+            double width = 0;
+            double height = 0;
+
+            for (Node node : this.getChildren()) {
+                if (node.getBoundsInParent().getMaxX() > width) {
+                    width = node.getBoundsInParent().getMaxX();
+                }
+                if (node.getBoundsInParent().getMaxY() > height) {
+                    height = node.getBoundsInParent().getMaxY();
+                }
+            }
+
+            this.setMinSize(width, height);
+        });
+
         this.initialized = true;
+    }
+
+    public void setTheGraph(Graph<V, E> theGraph) {
+        this.theGraph = theGraph;
+        updateAndWait();
     }
 
     /**
@@ -368,13 +390,13 @@ public class GraphPanel<V, E> extends Pane {
             placementStrategy.place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
         } else {
             //apply random placement
             new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
 
             //start automatic layout
             timer.start();
