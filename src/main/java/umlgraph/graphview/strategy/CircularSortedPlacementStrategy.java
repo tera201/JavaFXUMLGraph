@@ -1,15 +1,13 @@
 package umlgraph.graphview.strategy;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import umlgraph.graph.Graph;
+import umlgraph.graph.Vertex;
 import umlgraph.graphview.utils.UtilitiesPoint2D;
 import umlgraph.graphview.vertices.GraphVertex;
 import javafx.geometry.Point2D;
+import umlgraph.graphview.vertices.GraphVertexPaneNode;
 
 /**
  * Places vertices around a circle, ordered by the underlying
@@ -22,15 +20,15 @@ import javafx.geometry.Point2D;
 public class CircularSortedPlacementStrategy implements PlacementStrategy {
 
     @Override
-    public <V, E> void place(double width, double height, Graph<V, E> theGraph, Collection<? extends GraphVertex<V>> vertices) {
+    public <V, E> void place(double width, double height, Graph<V, E> theGraph, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes) {
         Point2D center = new Point2D(width / 2, height / 2);
-        int N = vertices.size();
+        int N = vertexNodes.values().size();
         double angleIncrement = -360f / N;
         
         //place first vertice north position, others in clockwise manner
         boolean first = true;
         Point2D p = null;
-        for (GraphVertex<V> vertex : sort(vertices)) {
+        for (GraphVertex<V> vertex : sort(vertexNodes.values())) {
             
             if (first) {
                 //verifiy smaller width and height.

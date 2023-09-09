@@ -8,6 +8,7 @@ import umlgraph.containers.GraphDemoContainer;
 import umlgraph.graphview.GraphPanel;
 import umlgraph.graphview.StylableNode;
 import umlgraph.graphview.arrows.ArrowTypes;
+import umlgraph.graphview.strategy.TreeCentralPlacementStrategy;
 import umlgraph.graphview.vertices.elements.ElementTypes;
 import umlgraph.graph.Vertex;
 import umlgraph.graph.Graph;
@@ -19,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import umlgraph.graphview.strategy.PlacementStrategy;
 import umlgraph.graph.Digraph;
-import umlgraph.graphview.strategy.CircularSortedPlacementStrategy;
 import umlgraph.graphview.vertices.GraphVertex;
 
 /**
@@ -36,8 +36,8 @@ public class Main extends Application {
         Graph<String, String> g = build_sample_digraph();
         //Graph<String, String> g = build_flower_graph();
         System.out.println(g);
-        
-        PlacementStrategy strategy = new CircularSortedPlacementStrategy();
+        //TODO create strategy for uml model
+        PlacementStrategy strategy = new TreeCentralPlacementStrategy();
         //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
         GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
 
@@ -123,6 +123,22 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    private Graph<String, String> build_sample2_digraph() {
+
+        Digraph<String, String> g = new DigraphEdgeList<>();
+
+        g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
+        g.insertVertex("B", ElementTypes.INTERFACE);
+        g.insertVertex("C", ElementTypes.COMPONENT);
+        g.insertVertex("D", ElementTypes.COMPONENT);
+//        g.insertVertex("main");
+
+        g.insertEdge("A", "B", "AB", ArrowTypes.AGGREGATION);
+        g.insertEdge("B", "C", "AC", ArrowTypes.DEPENDENCY);
+        g.insertEdge("A", "D", "AD", ArrowTypes.COMPOSITION);
+
+        return g;
+    }
 
     private Graph<String, String> build_sample_digraph() {
 
@@ -134,7 +150,6 @@ public class Main extends Application {
         g.insertVertex("D", ElementTypes.ENUM);
         g.insertVertex("E", ElementTypes.CLASS);
         g.insertVertex("F");
-        g.insertVertex("main");
 
         g.insertEdge("A", "B", "AB", ArrowTypes.AGGREGATION);
         g.insertEdge("B", "A", "AB2", ArrowTypes.DEPENDENCY);
@@ -145,9 +160,19 @@ public class Main extends Application {
         g.insertEdge("B", "E", "BE");
         g.insertEdge("F", "D", "DF");
         g.insertEdge("F", "D", "DF2");
-
         //yep, its a loop!
         g.insertEdge("A", "A", "Loop");
+
+        g.insertVertex("main");
+        g.insertVertex("mA");
+        g.insertVertex("mB");
+        g.insertVertex("mC");
+        g.insertVertex("mD");
+
+        g.insertEdge("main", "mA", "mA");
+        g.insertEdge("main", "mB", "mB");
+        g.insertEdge("main", "mC", "mC");
+        g.insertEdge("mB", "mD", "mD");
 
         return g;
     }

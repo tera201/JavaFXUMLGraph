@@ -1,8 +1,8 @@
 package umlgraph.graphview;
 
 
-import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +13,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.beans.property.Property;
+import javafx.collections.ListChangeListener;
 import umlgraph.graph.Vertex;
 import umlgraph.graphview.arrows.DefaultArrow;
 import umlgraph.graphview.arrows.DiamondArrow;
@@ -82,7 +84,7 @@ public class GraphPanel<V, E> extends Pane {
     /*
     INTERNAL DATA STRUCTURE
      */
-    private final Graph<V, E> theGraph;
+    private Graph<V, E> theGraph;
     private final PlacementStrategy placementStrategy;
     private final Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes;
     private final Map<umlgraph.graph.Edge<E, V>, EdgeBase> edgeNodes;
@@ -254,19 +256,40 @@ public class GraphPanel<V, E> extends Pane {
             placementStrategy.place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
         } else {
             //apply random placement
             new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
-                    this.vertexNodes.values());
+                    this.vertexNodes);
 
             //start automatic layout
             timer.start();
         }
 
+        this.getChildren().addListener((ListChangeListener<Node>) c -> {
+            double width = 0;
+            double height = 0;
+
+            for (Node node : this.getChildren()) {
+                if (node.getBoundsInParent().getMaxX() > width) {
+                    width = node.getBoundsInParent().getMaxX();
+                }
+                if (node.getBoundsInParent().getMaxY() > height) {
+                    height = node.getBoundsInParent().getMaxY();
+                }
+            }
+
+            this.setMinSize(width, height);
+        });
+
         this.initialized = true;
+    }
+
+    public void setTheGraph(Graph<V, E> theGraph) {
+        this.theGraph = theGraph;
+        updateAndWait();
     }
 
     /**
@@ -361,6 +384,25 @@ public class GraphPanel<V, E> extends Pane {
 
     }
 
+    public void resetPlaceStrategy() {
+        if (placementStrategy != null) {
+            // call strategy to place the vertices in their initial locations
+            placementStrategy.place(this.widthProperty().doubleValue(),
+                    this.heightProperty().doubleValue(),
+                    this.theGraph,
+                    this.vertexNodes);
+        } else {
+            //apply random placement
+            new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
+                    this.heightProperty().doubleValue(),
+                    this.theGraph,
+                    this.vertexNodes);
+
+            //start automatic layout
+            timer.start();
+        }
+    }
+
     private synchronized void updateNodes() {
         removeNodes();
         insertNodes();
@@ -432,14 +474,25 @@ public class GraphPanel<V, E> extends Pane {
                 if (this.edgesWithArrows) {
                     DefaultArrow arrow;
                     switch (edge.getArrowsType()) {
-                        case INHERITANCE, REALIZATION -> arrow = new TriangleArrow(this.graphProperties.getEdgeArrowSize());
-                        case AGGREGATION, COMPOSITION -> arrow = new DiamondArrow(this.graphProperties.getEdgeArrowSize());
-                        default -> arrow = new SimpleArrow(this.graphProperties.getEdgeArrowSize());
+                        case INHERITANCE:
+                        case REALIZATION:
+                            arrow = new TriangleArrow(this.graphProperties.getEdgeArrowSize());
+                            break;
+                        case AGGREGATION:
+                        case COMPOSITION:
+                            arrow = new DiamondArrow(this.graphProperties.getEdgeArrowSize());
+                            break;
+                        default:
+                            arrow = new SimpleArrow(this.graphProperties.getEdgeArrowSize());
                     }
 
                     switch (edge.getArrowsType()) {
-                        case INHERITANCE, REALIZATION, AGGREGATION -> arrow.setStyleClass("arrow-white");
-                        default -> arrow.setStyleClass("arrow-black");
+                        case INHERITANCE:
+                        case REALIZATION:
+                        case AGGREGATION:
+                            arrow.setStyleClass("arrow-white");
+                            break;
+                        default: arrow.setStyleClass("arrow-black");
                     }
                     graphEdge.attachArrow(arrow);
                     this.getChildren().add(arrow);
@@ -1064,14 +1117,16 @@ public class GraphPanel<V, E> extends Pane {
             if( cssFile != null ) {
                 css = cssFile.toURL().toExternalForm();
             } else {
-                File f = new File("smartgraph.css");
-                css = f.toURI().toURL().toExternalForm();
+                ClassLoader classLoader = getClass().getClassLoader();
+                css = classLoader.getResource("smartgraph.css").toURI().toURL().toExternalForm();
             }
 
             getStylesheets().add(css);
             this.getStyleClass().add("graph");
         } catch (MalformedURLException ex) {
             Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
