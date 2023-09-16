@@ -5,10 +5,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import umlgraph.containers.GraphDemoContainer;
+import umlgraph.graph.DigraphTreeEdgeList;
 import umlgraph.graphview.GraphPanel;
 import umlgraph.graphview.StylableNode;
 import umlgraph.graphview.arrows.ArrowTypes;
-import umlgraph.graphview.strategy.TreeCentralPlacementStrategy;
+import umlgraph.graphview.strategy.DigraphTreePlacementStrategy;
 import umlgraph.graphview.vertices.elements.ElementTypes;
 import umlgraph.graph.Vertex;
 import umlgraph.graph.Graph;
@@ -33,11 +34,11 @@ public class Main extends Application {
     @Override
     public void start(Stage ignored) {
 
-        Graph<String, String> g = build_sample_digraph();
+        Graph<String, String> g = build_sample4_digraph();
         //Graph<String, String> g = build_flower_graph();
         System.out.println(g);
         //TODO create strategy for uml model
-        PlacementStrategy strategy = new TreeCentralPlacementStrategy();
+        PlacementStrategy strategy = new DigraphTreePlacementStrategy();
         //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
         GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
 
@@ -122,6 +123,47 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    private Graph<String, String> build_sample4_digraph() {
+
+        Digraph<String, String> g = new DigraphTreeEdgeList<>();
+        Vertex a = g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
+        Vertex b = g.insertVertex("B", ElementTypes.INTERFACE);
+        Vertex c = g.insertVertex("C", ElementTypes.COMPONENT);
+        Vertex d = g.insertVertex("D", ElementTypes.ENUM);
+        Vertex e = g.insertVertex("E", ElementTypes.CLASS);
+        Vertex f =  g.insertVertex("F");
+        Vertex mn = g.insertVertex("main");
+        g.insertEdge(a, b, "AB", ArrowTypes.AGGREGATION);
+        g.insertEdge(b, a, "AB2", ArrowTypes.DEPENDENCY);
+        g.insertEdge(a, c, "AC", ArrowTypes.COMPOSITION);
+        g.insertEdge(a, d, "AD");
+        g.insertEdge(b, c, "BC");
+        g.insertEdge(c, d, "CD", ArrowTypes.REALIZATION);
+        g.insertEdge(b, e, "BE");
+        g.insertEdge(d, f, "DF2");
+        g.insertEdge(f, d, "DF");
+
+        //yep, it's a loop!
+        g.insertEdge(a, a, "Loop");
+
+        return g;
+    }
+    private Graph<String, String> build_sample3_digraph() {
+
+        Digraph<String, String> g = new DigraphTreeEdgeList<>();
+
+        Vertex a = g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
+        Vertex b = g.insertVertex("B", ElementTypes.INTERFACE);
+        Vertex c = g.insertVertex("C", ElementTypes.COMPONENT);
+        Vertex d = g.insertVertex("D", ElementTypes.COMPONENT);
+//        g.insertVertex("main");
+
+        g.insertEdge(a, b, "AB", ArrowTypes.AGGREGATION);
+        g.insertEdge(b, c, "AC", ArrowTypes.DEPENDENCY);
+        g.insertEdge(a, d, "AD", ArrowTypes.COMPOSITION);
+
+        return g;
     }
     private Graph<String, String> build_sample2_digraph() {
 

@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>javafx-uml-graph-idea</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <distributionManagement>
         <repository>
