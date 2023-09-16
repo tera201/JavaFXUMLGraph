@@ -1,9 +1,12 @@
 package umlgraph.graphview.strategy;
 
 import java.util.Collection;
+import java.util.Map;
 
 import umlgraph.graph.Graph;
+import umlgraph.graph.Vertex;
 import umlgraph.graphview.vertices.GraphVertex;
+import umlgraph.graphview.vertices.GraphVertexPaneNode;
 
 /**
  * Contains the method that should be implemented when creating new vertex placement
@@ -31,5 +34,5 @@ public interface PlacementStrategy {
      * @param vertices  Collection of {@link GraphVertex} to place.
      *                  
      */
-    public <V,E> void place(double width, double height, Graph<V,E> theGraph, Collection<? extends GraphVertex<V>> vertices);
+    public <V,E> void place(double width, double height, Graph<V,E> theGraph, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes);
 }

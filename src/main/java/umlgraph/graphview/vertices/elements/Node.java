@@ -19,11 +19,19 @@ public class Node<T> implements Element {
         this.label = new Label(v.element().toString());
         this.elementTypes = v.getType();
         switch (elementTypes) {
-            case ENUM -> paneElement = new Enumerations();
-            case PACKAGE -> paneElement = new Packages();
-            case INTERFACE -> paneElement = new Interfaces();
-            case COMPONENT -> paneElement = new Components();
-            default -> paneElement = new Classes();
+            case ENUM:
+                paneElement = new Enumerations();
+                break;
+            case PACKAGE:
+                paneElement = new Packages();
+                break;
+            case INTERFACE:
+                paneElement = new Interfaces();
+                break;
+            case COMPONENT:
+                paneElement = new Components();
+                break;
+            default: paneElement = new Classes();
         }
         init();
     }
@@ -60,11 +68,19 @@ public class Node<T> implements Element {
 
 
         switch (elementTypes) {
-            case ENUM -> setStyleClass("enumerations");
-            case PACKAGE -> setStyleClass("packages");
-            case INTERFACE -> setStyleClass("interfacesHard");
-            case COMPONENT -> setStyleClass("components");
-            default -> setStyleClass("classes");
+            case ENUM:
+                setStyleClass("enumerations");
+                break;
+            case PACKAGE:
+                setStyleClass("packages");
+                break;
+            case INTERFACE:
+                setStyleClass("interfacesHard");
+                break;
+            case COMPONENT:
+                setStyleClass("components");
+                break;
+            default: setStyleClass("classes");
         }
     };
 
