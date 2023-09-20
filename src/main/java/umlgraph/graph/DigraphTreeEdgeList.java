@@ -158,6 +158,13 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
 
     }
 
+    public synchronized Vertex<V> getVertex(V vElement) {
+        if (!vertices.containsKey(vElement)) {
+            throw new InvalidVertexException("Vertex does not belong to this graph.");
+        }
+        return vertices.get(vElement);
+    }
+
     @Override
     public synchronized Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
         if (existsVertexWith(vElement)) {
