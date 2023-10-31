@@ -33,7 +33,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>umlgraph.Main</mainClass>
+                    <mainClass>org.tera201.umlgraph.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
