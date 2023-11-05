@@ -29,8 +29,6 @@ import org.tera201.umlgraph.graphview.vertices.GraphVertex;
  */
 public class Main extends Application {
 
-    private volatile boolean running;
-
     @Override
     public void start(Stage ignored) {
 
