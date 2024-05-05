@@ -262,7 +262,7 @@ public class Main extends Application {
 
     private void continuously_test_adding_elements(Graph<String, String> g, GraphPanel<String, String> graphView) {
         //update graph
-        running = true;
+        var running = true;
         final long ITERATION_WAIT = 3000; //milliseconds
 
         Runnable r;

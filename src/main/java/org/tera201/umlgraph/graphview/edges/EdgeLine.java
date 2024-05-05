@@ -45,8 +45,7 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
         
         styleProxy = new StyleProxy(this);
         switch (edge.getArrowsType()) {
-            case DEPENDENCY:
-            case REALIZATION:
+            case DEPENDENCY, REALIZATION:
                 styleProxy.addStyleClass("edge-dash");
                 break;
             default: styleProxy.addStyleClass("edge");

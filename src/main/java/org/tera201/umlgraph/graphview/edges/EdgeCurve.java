@@ -63,8 +63,7 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
 
         styleProxy = new StyleProxy(this);
         switch (edge.getArrowsType()) {
-            case DEPENDENCY:
-            case REALIZATION:
+            case DEPENDENCY, REALIZATION:
                 styleProxy.addStyleClass("edge-dash");
                 break;
             default: styleProxy.addStyleClass("edge");

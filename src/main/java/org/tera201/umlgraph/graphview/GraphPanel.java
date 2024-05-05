@@ -471,24 +471,14 @@ public class GraphPanel<V, E> extends Pane {
                 addEdge(graphEdge, edge);
 
                 if (this.edgesWithArrows) {
-                    DefaultArrow arrow;
-                    switch (edge.getArrowsType()) {
-                        case INHERITANCE:
-                        case REALIZATION:
-                            arrow = new TriangleArrow(this.graphProperties.getEdgeArrowSize());
-                            break;
-                        case AGGREGATION:
-                        case COMPOSITION:
-                            arrow = new DiamondArrow(this.graphProperties.getEdgeArrowSize());
-                            break;
-                        default:
-                            arrow = new SimpleArrow(this.graphProperties.getEdgeArrowSize());
-                    }
+                    DefaultArrow arrow = switch (edge.getArrowsType()) {
+                        case INHERITANCE, REALIZATION -> new TriangleArrow(this.graphProperties.getEdgeArrowSize());
+                        case AGGREGATION, COMPOSITION -> new DiamondArrow(this.graphProperties.getEdgeArrowSize());
+                        default -> new SimpleArrow(this.graphProperties.getEdgeArrowSize());
+                    };
 
                     switch (edge.getArrowsType()) {
-                        case INHERITANCE:
-                        case REALIZATION:
-                        case AGGREGATION:
+                        case INHERITANCE, REALIZATION, AGGREGATION:
                             arrow.setStyleClass("arrow-white");
                             break;
                         default: arrow.setStyleClass("arrow-black");

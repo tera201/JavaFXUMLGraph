@@ -3,7 +3,7 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
 */
 
 .graph {
-    -fx-background-color: #F4FFFB;    
+    /*-fx-background-color: #F4FFFB;    */
 }
 
 .vertex {

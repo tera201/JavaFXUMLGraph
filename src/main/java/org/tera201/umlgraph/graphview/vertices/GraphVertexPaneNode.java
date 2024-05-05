@@ -245,17 +245,23 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
      * Make a node movable by dragging it around with the mouse primary button.
      */
     private void enableDrag() {
-        final PointVector dragDelta = new PointVector(0, 0);
+
+        final DragContext sceneDragContext = new DragContext();
 
         setOnMousePressed((MouseEvent mouseEvent) -> {
             if (mouseEvent.isPrimaryButtonDown()) {
                 // record a delta distance for the drag and drop operation.
-                dragDelta.x = mouseEvent.getX();
-                dragDelta.y = mouseEvent.getY();
                 getScene().setCursor(Cursor.MOVE);
                 isDragging = true;
 
                 mouseEvent.consume();
+
+                sceneDragContext.mouseAnchorX = mouseEvent.getSceneX();
+                sceneDragContext.mouseAnchorY = mouseEvent.getSceneY();
+
+                // Запомните текущие смещения
+                sceneDragContext.translateAnchorX = this.getLayoutX();
+                sceneDragContext.translateAnchorY = this.getLayoutY();
             }
 
         });
@@ -271,13 +277,10 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
             this.getTranslateX();
             if (mouseEvent.isPrimaryButtonDown()) {
                 setManaged(false);
-                double newX = mouseEvent.getSceneX() - dragDelta.x;
-                double x = boundCenterCoordinate(newX, 0, getParent().getLayoutBounds().getWidth());
-                setCenterX(x);
-
-                double newY = mouseEvent.getSceneY() - dragDelta.y;
-                double y = boundCenterCoordinate(newY, 0, getParent().getLayoutBounds().getHeight());
-                setCenterY(y);
+                double deltaX = mouseEvent.getSceneX() - sceneDragContext.mouseAnchorX;
+                double deltaY = mouseEvent.getSceneY() - sceneDragContext.mouseAnchorY;
+                this.setCenterX(sceneDragContext.translateAnchorX + deltaX);
+                this.setCenterY(sceneDragContext.translateAnchorY + deltaY);
                 mouseEvent.consume();
             }
 
@@ -389,5 +392,15 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
             this.x = x;
             this.y = y;
         }
+    }
+
+    class DragContext {
+
+        double mouseAnchorX;
+        double mouseAnchorY;
+
+        double translateAnchorX;
+        double translateAnchorY;
+
     }
 }

@@ -26,9 +26,7 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
 
         for (Vertex<V> vertex : vertexNodes.keySet()) {
             if (vertex instanceof VertexTreeNode<V>) {
-                System.out.println(vertex + "   " + ((VertexTreeNode<V>) vertex).getParent());
                 if (((VertexTreeNode<V>) vertex).getParent() == null) {
-                    System.out.println(vertex);
                     connectedComponents.add(vertexNodes.get(vertex));
                 }
             }
@@ -40,7 +38,7 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
         for (GraphVertexPaneNode<V> root : connectedComponents) {
             placeTree(root, graph, width / 2 + xOffset, yOffset, vertexNodes);
             if (root.getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset += 200 * ((VertexTreeNode<?>) root.getUnderlyingVertex()).getDepth();
-            yOffset += 200;
+            yOffset += 50;
         }
     }
 
