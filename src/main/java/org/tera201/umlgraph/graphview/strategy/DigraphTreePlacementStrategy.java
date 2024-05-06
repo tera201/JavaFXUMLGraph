@@ -23,24 +23,54 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
         visitedBalanced.clear();
         visitedWidth.clear();
         List<GraphVertexPaneNode<V>> connectedComponents = new ArrayList<>();
+        List<GraphVertexPaneNode<V>> aloneComponents = new ArrayList<>();
+        Map<GraphVertexPaneNode<V>, Collection<GraphVertex>> neighborsMap = new HashMap<>();
 
         for (Vertex<V> vertex : vertexNodes.keySet()) {
-            if (vertex instanceof VertexTreeNode<V>) {
-                if (((VertexTreeNode<V>) vertex).getParent() == null) {
+            if (vertex instanceof VertexTreeNode<V> vertexTreeNode) {
+                if (vertexTreeNode.getParent() == null && vertexTreeNode.getChilds() != null) {
                     connectedComponents.add(vertexNodes.get(vertex));
+                } else if (vertexTreeNode.getParent() == null && vertexTreeNode.getChilds() == null) {
+                    aloneComponents.add(vertexNodes.get(vertex));
+                    System.out.println(vertexNodes.get(vertex).getAttachedLabel().getText());
                 }
             }
         }
 
         double xOffset = 0;
         double yOffset = 0;
+        final int[] yOffset2 = {0};
+        final int[] xOffset2 = {10};
+        connectedComponents.forEach(it -> neighborsMap.put(it, neighbors(it, graph, vertexNodes)));
+        neighborsMap.entrySet().stream().filter(it -> it.getValue().size() == 0).forEach(it -> {
+            placeAloneVertex(it.getKey(), graph, xOffset2[0], yOffset2[0], vertexNodes);
+            xOffset2[0] = (xOffset2[0] + it.getKey().getWidth() + 10) < width * 1.2 ? (int) (xOffset2[0] + it.getKey().getWidth() + 10) : 10;
+            yOffset2[0] += xOffset2[0] == 10? 50 : 0;
+        });
 
-        for (GraphVertexPaneNode<V> root : connectedComponents) {
-            placeTree(root, graph, width / 2 + xOffset, yOffset, vertexNodes);
-            if (root.getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset += 200 * ((VertexTreeNode<?>) root.getUnderlyingVertex()).getDepth();
-            yOffset += 50;
+        for (GraphVertexPaneNode<V> node : aloneComponents) {
+            placeAloneVertex(node, graph, width / 2 + xOffset, yOffset2[0], vertexNodes);
+//            yOffset[0] += 50;
         }
+        yOffset2[0] += 50;
+
+        neighborsMap.entrySet().stream().filter(it -> it.getValue().size() > 0).forEach(it -> {
+            placeTree(it.getKey(), graph, width / 2 + xOffset, yOffset2[0], vertexNodes);
+            if (it.getKey().getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset2[0] += 200 * ((VertexTreeNode<?>) it.getKey().getUnderlyingVertex()).getDepth();
+        });
+
+//        for (GraphVertexPaneNode<V> root : connectedComponents) {
+//            placeTree(root, graph, width / 2 + xOffset, yOffset, vertexNodes);
+//            if (root.getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset += 200 * ((VertexTreeNode<?>) root.getUnderlyingVertex()).getDepth();
+//            yOffset += 50;
+//        }
     }
+
+    private <V, E> void placeAloneVertex(GraphVertex root, Graph<V, E> graph, double x, double y, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes) {
+        visited.add(root);
+        root.setPosition(x, y);
+    }
+
 
     private <V, E> void placeTree(GraphVertex root, Graph<V, E> graph, double x, double y, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes) {
         if (visited.contains(root)) {
