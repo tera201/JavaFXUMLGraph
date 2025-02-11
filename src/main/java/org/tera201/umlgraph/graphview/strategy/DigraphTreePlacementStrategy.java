@@ -2,8 +2,7 @@ package org.tera201.umlgraph.graphview.strategy;
 
 import org.tera201.umlgraph.graph.Graph;
 import org.tera201.umlgraph.graph.Vertex;
-import org.tera201.umlgraph.graph.VertexTree;
-import org.tera201.umlgraph.graph.VertexTreeNode;
+import org.tera201.umlgraph.graph.VertexNode;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
 
@@ -27,10 +26,10 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
         Map<GraphVertexPaneNode<V>, Collection<GraphVertex>> neighborsMap = new HashMap<>();
 
         for (Vertex<V> vertex : vertexNodes.keySet()) {
-            if (vertex instanceof VertexTreeNode<V> vertexTreeNode) {
-                if (vertexTreeNode.getParent() == null && vertexTreeNode.getChilds() != null) {
+            if (vertex instanceof VertexNode<V> VertexNode) {
+                if (VertexNode.getParent() == null && VertexNode.getChilds() != null) {
                     connectedComponents.add(vertexNodes.get(vertex));
-                } else if (vertexTreeNode.getParent() == null && vertexTreeNode.getChilds() == null) {
+                } else if (VertexNode.getParent() == null && VertexNode.getChilds() == null) {
                     aloneComponents.add(vertexNodes.get(vertex));
                     System.out.println(vertexNodes.get(vertex).getAttachedLabel().getText());
                 }
@@ -56,12 +55,12 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
 
         neighborsMap.entrySet().stream().filter(it -> it.getValue().size() > 0).forEach(it -> {
             placeTree(it.getKey(), graph, width / 2 + xOffset, yOffset2[0], vertexNodes);
-            if (it.getKey().getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset2[0] += 200 * ((VertexTreeNode<?>) it.getKey().getUnderlyingVertex()).getDepth();
+            if (it.getKey().getUnderlyingVertex() instanceof  VertexNode<?>) yOffset2[0] += 200 * ((VertexNode<?>) it.getKey().getUnderlyingVertex()).getDepth();
         });
 
 //        for (GraphVertexPaneNode<V> root : connectedComponents) {
 //            placeTree(root, graph, width / 2 + xOffset, yOffset, vertexNodes);
-//            if (root.getUnderlyingVertex() instanceof  VertexTreeNode<?>) yOffset += 200 * ((VertexTreeNode<?>) root.getUnderlyingVertex()).getDepth();
+//            if (root.getUnderlyingVertex() instanceof  VertexNode<?>) yOffset += 200 * ((VertexNode<?>) root.getUnderlyingVertex()).getDepth();
 //            yOffset += 50;
 //        }
     }
@@ -93,10 +92,10 @@ public class DigraphTreePlacementStrategy implements  PlacementStrategy{
     }
 
     private <V, E> Collection<GraphVertex> neighbors(GraphVertex graphVertex, Graph<V, E> graph, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes) {
-        List<? extends VertexTree<?>> vertexTreeList;
+        List<? extends Vertex<?>> vertexTreeList;
         Collection<GraphVertex> neighbors = new ArrayList<>();
-        if (graphVertex.getUnderlyingVertex() instanceof VertexTreeNode<?>) {
-            vertexTreeList = ((VertexTreeNode<?>) graphVertex.getUnderlyingVertex()).getChilds();
+        if (graphVertex.getUnderlyingVertex() instanceof VertexNode<?>) {
+            vertexTreeList = ((VertexNode<?>) graphVertex.getUnderlyingVertex()).getChilds();
             vertexTreeList.forEach(it -> neighbors.add(vertexNodes.get(it)));
         }
 

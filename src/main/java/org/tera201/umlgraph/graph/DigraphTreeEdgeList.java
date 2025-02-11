@@ -77,8 +77,8 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidEdgeException("There's already an edge with this element.");
         }
 
-        VertexTreeNode<V> outVertex = checkVertex(outbound);
-        VertexTreeNode<V> inVertex = checkVertex(inbound);
+        VertexNode<V> outVertex = checkVertex(outbound);
+        VertexNode<V> inVertex = checkVertex(inbound);
 
         outVertex.addChild(inVertex);
 
@@ -102,8 +102,8 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("No vertex contains " + inboundElement);
         }
 
-        VertexTreeNode<V> outVertex = vertexOf(outboundElement);
-        VertexTreeNode<V> inVertex = vertexOf(inboundElement);
+        VertexNode<V> outVertex = vertexOf(outboundElement);
+        VertexNode<V> inVertex = vertexOf(inboundElement);
 
         EdgeNode<E, V> newEdge = new EdgeNode<>(edgeElement, outVertex, inVertex, arrowTypes);
 
@@ -170,7 +170,7 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexTreeNode<V> newVertex = new VertexTreeNode<>(vElement);
+        VertexNode<V> newVertex = new VertexNode<>(vElement);
 
         vertices.put(vElement, newVertex);
 
@@ -183,7 +183,7 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexTreeNode<V> newVertex = new VertexTreeNode<>(vElement, elementTypes);
+        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes);
 
         vertices.put(vElement, newVertex);
 
@@ -196,7 +196,7 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexTreeNode<V> newVertex = new VertexTreeNode<>(vElement, elementTypes, notes);
+        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, notes);
 
         vertices.put(vElement, newVertex);
 
@@ -238,7 +238,7 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexTreeNode<V> vertex = checkVertex(v);
+        VertexNode<V> vertex = checkVertex(v);
 
         V oldElement = vertex.element;
         vertex.element = newElement;
@@ -260,10 +260,10 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
         return oldElement;
     }
 
-    private VertexTreeNode<V> vertexOf(V vElement) {
+    private VertexNode<V> vertexOf(V vElement) {
         for (Vertex<V> v : vertices.values()) {
             if (v.element().equals(vElement)) {
-                return (VertexTreeNode<V>) v;
+                return (VertexNode<V>) v;
             }
         }
         return null;
@@ -301,12 +301,12 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
      * @return
      * @throws InvalidVertexException
      */
-    private VertexTreeNode<V> checkVertex(Vertex<V> v) throws InvalidVertexException {
+    private VertexNode<V> checkVertex(Vertex<V> v) throws InvalidVertexException {
         if(v == null) throw new InvalidVertexException("Null vertex.");
 
-        VertexTreeNode<V> vertex;
+        VertexNode<V> vertex;
         try {
-            vertex = (VertexTreeNode<V>) v;
+            vertex = (VertexNode<V>) v;
         } catch (ClassCastException e) {
             throw new InvalidVertexException("Not a vertex.");
         }

@@ -13,8 +13,6 @@ import org.tera201.umlgraph.graphview.strategy.DigraphTreePlacementStrategy;
 import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graph.Graph;
-import org.tera201.umlgraph.graph.GraphEdgeList;
-import org.tera201.umlgraph.graph.DigraphEdgeList;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -33,11 +31,8 @@ public class Main extends Application {
     public void start(Stage ignored) {
 
         Graph<String, String> g = build_sample4_digraph();
-        //Graph<String, String> g = build_flower_graph();
         System.out.println(g);
-        //TODO create strategy for uml model
         PlacementStrategy strategy = new DigraphTreePlacementStrategy();
-        //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
         GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
 
         /*
@@ -82,10 +77,6 @@ public class Main extends Application {
                 
                 graphVertex.addStyleClass("myVertex");
             }
-            
-            //want fun? uncomment below with automatic layout
-            //g.removeVertex(graphVertex.getUnderlyingVertex());
-            //graphView.update();
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
@@ -161,100 +152,6 @@ public class Main extends Application {
         g.insertEdge(b, c, "AC", ArrowTypes.DEPENDENCY);
         g.insertEdge(a, d, "AD", ArrowTypes.COMPOSITION);
 
-        return g;
-    }
-    private Graph<String, String> build_sample2_digraph() {
-
-        Digraph<String, String> g = new DigraphEdgeList<>();
-
-        g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
-        g.insertVertex("B", ElementTypes.INTERFACE);
-        g.insertVertex("C", ElementTypes.COMPONENT);
-        g.insertVertex("D", ElementTypes.COMPONENT);
-//        g.insertVertex("main");
-
-        g.insertEdge("A", "B", "AB", ArrowTypes.AGGREGATION);
-        g.insertEdge("B", "C", "AC", ArrowTypes.DEPENDENCY);
-        g.insertEdge("A", "D", "AD", ArrowTypes.COMPOSITION);
-
-        return g;
-    }
-
-    private Graph<String, String> build_sample_digraph() {
-
-        Digraph<String, String> g = new DigraphEdgeList<>();
-
-        g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
-        g.insertVertex("B", ElementTypes.INTERFACE);
-        g.insertVertex("C", ElementTypes.COMPONENT);
-        g.insertVertex("D", ElementTypes.ENUM);
-        g.insertVertex("E", ElementTypes.CLASS);
-        g.insertVertex("F");
-
-        g.insertEdge("A", "B", "AB", ArrowTypes.AGGREGATION);
-        g.insertEdge("B", "A", "AB2", ArrowTypes.DEPENDENCY);
-        g.insertEdge("A", "C", "AC", ArrowTypes.COMPOSITION);
-        g.insertEdge("A", "D", "AD");
-        g.insertEdge("B", "C", "BC");
-        g.insertEdge("C", "D", "CD", ArrowTypes.REALIZATION);
-        g.insertEdge("B", "E", "BE");
-        g.insertEdge("F", "D", "DF");
-        g.insertEdge("F", "D", "DF2");
-        //yep, its a loop!
-        g.insertEdge("A", "A", "Loop");
-
-        g.insertVertex("main");
-        g.insertVertex("mA");
-        g.insertVertex("mB");
-        g.insertVertex("mC");
-        g.insertVertex("mD");
-
-        g.insertEdge("main", "mA", "mA");
-        g.insertEdge("main", "mB", "mB");
-        g.insertEdge("main", "mC", "mC");
-        g.insertEdge("mB", "mD", "mD");
-
-        return g;
-    }
-
-    private Graph<String, String> build_flower_graph() {
-
-        Graph<String, String> g = new GraphEdgeList<>();
-
-        g.insertVertex("A");
-        g.insertVertex("B");
-        g.insertVertex("C");
-        g.insertVertex("D");
-        g.insertVertex("E");
-        g.insertVertex("F");
-        g.insertVertex("G");
-
-        g.insertEdge("A", "B", "1");
-        g.insertEdge("A", "C", "2");
-        g.insertEdge("A", "D", "3");
-        g.insertEdge("A", "E", "4");
-        g.insertEdge("A", "F", "5");
-        g.insertEdge("A", "G", "6");
-
-        g.insertVertex("H");
-        g.insertVertex("I");
-        g.insertVertex("J");
-        g.insertVertex("K");
-        g.insertVertex("L");
-        g.insertVertex("M");
-        g.insertVertex("N");
-
-        g.insertEdge("H", "I", "7");
-        g.insertEdge("H", "J", "8");
-        g.insertEdge("H", "K", "9");
-        g.insertEdge("H", "L", "10");
-        g.insertEdge("H", "M", "11");
-        g.insertEdge("H", "N", "12");
-
-        g.insertEdge("A", "H", "0");
-
-        //g.insertVertex("ISOLATED");
-        
         return g;
     }
 
