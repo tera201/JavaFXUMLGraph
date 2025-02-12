@@ -528,7 +528,7 @@ public class GraphPanel<V, E> extends Pane {
     private void addVertex(GraphVertexPaneNode<V> v) {
         this.getChildren().add(v);
 
-        String labelText = generateVertexLabel(v.getUnderlyingVertex().element());
+        String labelText = v.getUnderlyingVertex().getLabel();
 
         // add pop-up property
         if (graphProperties.getUseVertexTooltip()) {
@@ -735,7 +735,7 @@ public class GraphPanel<V, E> extends Pane {
             if (vertexNode != null) {
                 Label label = vertexNode.getAttachedLabel();
                 if(label != null) {
-                    String text = generateVertexLabel(v.element());
+                    String text = v.getLabel();
                     label.setText( text );
                 }
 
@@ -754,6 +754,7 @@ public class GraphPanel<V, E> extends Pane {
         });
     }
 
+    @Deprecated
     private String generateVertexLabel(V vertex) {
 
         try {

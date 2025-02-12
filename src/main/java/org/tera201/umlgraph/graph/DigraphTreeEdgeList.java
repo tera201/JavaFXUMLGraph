@@ -74,7 +74,8 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
     @Override
     public synchronized Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement, ArrowTypes arrowTypes) throws InvalidVertexException, InvalidEdgeException {
         if (existsEdgeWith(edgeElement)) {
-            throw new InvalidEdgeException("There's already an edge with this element.");
+            return edges.get(edgeElement);
+//            throw new InvalidEdgeException("There's already an edge with this element.");
         }
 
         VertexNode<V> outVertex = checkVertex(outbound);
@@ -191,12 +192,25 @@ public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public synchronized Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String notes) throws InvalidVertexException {
+    public synchronized Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label) throws InvalidVertexException {
         if (existsVertexWith(vElement)) {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, notes);
+        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, label);
+
+        vertices.put(vElement, newVertex);
+
+        return newVertex;
+    }
+
+    @Override
+    public synchronized Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label, String notes) throws InvalidVertexException {
+        if (existsVertexWith(vElement)) {
+            throw new InvalidVertexException("There's already a vertex with this element.");
+        }
+
+        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, label, notes);
 
         vertices.put(vElement, newVertex);
 

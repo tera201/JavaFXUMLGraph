@@ -115,7 +115,9 @@ public interface Graph<V, E> {
     public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes)
             throws InvalidVertexException;
 
-    public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String notes)
+    public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label)
+            throws InvalidVertexException;
+    public Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label, String notes)
             throws InvalidVertexException;
 
     /**

@@ -16,7 +16,7 @@ public class Node<T> implements Element {
     private ElementTypes elementTypes = ElementTypes.CLASS;
 
     public Node(Vertex<T> v) {
-        this.label = new Label(v.element().toString());
+        this.label = new Label(v.getLabel());
         this.elementTypes = v.getType();
         switch (elementTypes) {
             case ENUM:

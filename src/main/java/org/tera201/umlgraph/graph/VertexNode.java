@@ -10,6 +10,7 @@ import static java.lang.Math.max;
 public class VertexNode<V> implements Vertex<V>{
 
     V element;
+    String label;
     ElementTypes elementTypes;
     String notes = "";
     List<Vertex<V>> childs;
@@ -21,20 +22,31 @@ public class VertexNode<V> implements Vertex<V>{
     }
 
     public VertexNode(V element, ElementTypes elementTypes) {
+        this(element, elementTypes, element.toString());
+    }
+
+
+    public VertexNode(V element, ElementTypes elementTypes, String label) {
         this.element = element;
         this.elementTypes = elementTypes;
+        this.label = label;
         this.childs = new ArrayList<>();
         this.depth = 0;
     }
 
-    public VertexNode(V element, ElementTypes elementTypes, String notes) {
-        this(element, elementTypes);
+    public VertexNode(V element, ElementTypes elementTypes, String label, String notes) {
+        this(element, elementTypes, label);
         this.notes = notes;
     }
 
     @Override
     public V element() {
         return this.element;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.label;
     }
 
     @Override
