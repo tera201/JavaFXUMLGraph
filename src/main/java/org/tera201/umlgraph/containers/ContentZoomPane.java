@@ -34,8 +34,8 @@ public class ContentZoomPane extends BorderPane {
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Node content;
 
-    private static final double MIN_SCALE = 0.2;
-    private static final double MAX_SCALE = 5;
+    private static final double MIN_SCALE = 0.3;
+    private static final double MAX_SCALE = 2;
     private static final double SCROLL_DELTA = 0.05;
 
     public ContentZoomPane(Node content) {
