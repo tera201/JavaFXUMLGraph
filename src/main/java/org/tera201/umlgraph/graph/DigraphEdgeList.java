@@ -15,14 +15,14 @@ import java.util.*;
  *
  * @author r.naryshkin99
  */
-public class DigraphTreeEdgeList<V, E> implements Digraph<V, E> {
+public class DigraphEdgeList<V, E> implements Digraph<V, E> {
 
      /* inner classes are defined at the end of the class, so are the auxiliary methods
      */
     private final Map<V, Vertex<V>> vertices;
     private final Map<E, Edge<E, V>> edges;
 
-    public DigraphTreeEdgeList() {
+    public DigraphEdgeList() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
     }

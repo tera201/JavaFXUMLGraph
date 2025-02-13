@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.tera201.umlgraph.containers.GraphDemoContainer;
-import org.tera201.umlgraph.graph.DigraphTreeEdgeList;
+import org.tera201.umlgraph.graph.DigraphEdgeList;
 import org.tera201.umlgraph.graphview.GraphPanel;
 import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
@@ -115,7 +115,7 @@ public class Main extends Application {
     }
     private Graph<String, String> build_sample4_digraph() {
 
-        Digraph<String, String> g = new DigraphTreeEdgeList<>();
+        Digraph<String, String> g = new DigraphEdgeList<>();
         Vertex a = g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
         Vertex b = g.insertVertex("B", ElementTypes.INTERFACE);
         Vertex c = g.insertVertex("C", ElementTypes.COMPONENT);
@@ -140,7 +140,7 @@ public class Main extends Application {
     }
     private Graph<String, String> build_sample3_digraph() {
 
-        Digraph<String, String> g = new DigraphTreeEdgeList<>();
+        Digraph<String, String> g = new DigraphEdgeList<>();
 
         Vertex a = g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
         Vertex b = g.insertVertex("B", ElementTypes.INTERFACE);
