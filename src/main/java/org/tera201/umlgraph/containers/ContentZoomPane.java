@@ -54,6 +54,14 @@ public class ContentZoomPane extends BorderPane {
         enablePanAndZoom();
     }
 
+    public void resetView() {
+        content.setScaleX(1);
+        content.setScaleY(1);
+        content.setTranslateX(0);
+        content.setTranslateY(0);
+        scaleFactorProperty.setValue(1);
+    }
+
     private Node createSlider() {
 
         Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
