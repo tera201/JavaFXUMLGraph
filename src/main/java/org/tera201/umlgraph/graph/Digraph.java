@@ -1,6 +1,7 @@
 package org.tera201.umlgraph.graph;
 
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
+import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 
 import java.util.Collection;
 
@@ -20,7 +21,7 @@ import java.util.Collection;
  * @see Edge
  * @see Vertex
  */
-public interface Digraph<V, E> extends Graph<V, E> {
+public interface Digraph<V, E> {
     
     /**
      * Returns a vertex's <i>incident</i> edges as a collection.
@@ -29,53 +30,44 @@ public interface Digraph<V, E> extends Graph<V, E> {
      * <i>inbound vertex</i>, i.e., the edges "entering" vertex <code>inbound</code>.
      * If there are no incident edges, e.g., an isolated vertex, 
      * returns an empty collection.
-     * 
-     * @param inbound     vertex for which to obtain the incident edges
-     * 
-     * @return            collection of edges
      */
-    @Override
     public Collection<Edge<E, V>> incidentEdges(Vertex<V> inbound)
             throws InvalidVertexException;
 
     /**
      * Returns a vertex's <i>outbound</i> edges as a collection.
-     * 
-     * Incident edges are all edges that have vertex <code>outbound</code> as the
-     * <i>outbound vertex</i>, i.e., the edges "leaving" vertex <code>outbound</code>.
-     * If there are no outbound edges, e.g., an isolated vertex, 
-     * returns an empty collection.
-     * 
-     * @param outbound     vertex for which to obtain the outbound edges
-     * 
-     * @return            collection of edges
      */
     public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound)
             throws InvalidVertexException;
 
-    /**
-     * Inserts a new edge with a given element between two existing vertices and
-     * return its (the edge's) reference.
-     *
-     * @param outbound    outbound vertex
-     * @param inbound     inbound vertex
-     * @param edgeElement the element to store in the new edge
-     * @param arrowTypes
-     * @return the reference for the newly created edge
-     * @throws InvalidVertexException if <code>outbound</code> or
-     *                                <code>inbound</code>
-     *                                are invalid vertices for the graph
-     * @throws InvalidEdgeException   if there already exists an edge
-     *                                containing <code>edgeElement</code>
-     *                                according to the equality of
-     *                                {@link Object#equals(java.lang.Object)}
-     *                                method.
-     */
-    @Override
-    public Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement, ArrowTypes arrowTypes)
+
+    Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement, ArrowTypes arrowTypes)
+            throws InvalidVertexException, InvalidEdgeException;
+    int numVertices();
+    int numEdges();
+
+    Collection<Vertex<V>> vertices();
+    Collection<Edge<E, V>> edges();
+    Vertex<V> opposite(Vertex<V> v, Edge<E, V> e)
             throws InvalidVertexException, InvalidEdgeException;
 
+    Vertex<V> insertVertex(V vElement)
+            throws InvalidVertexException;
 
-    
-    
+    Vertex<V> insertVertex(V vElement, ElementTypes elementTypes)
+            throws InvalidVertexException;
+
+    Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label)
+            throws InvalidVertexException;
+    Vertex<V> insertVertex(V vElement, ElementTypes elementTypes, String label, String notes)
+            throws InvalidVertexException;
+
+    default Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement)
+            throws InvalidVertexException, InvalidEdgeException {
+        return insertEdge(u, v, edgeElement, ArrowTypes.ASSOCIATION);
+    }
+
+
+
+
 }

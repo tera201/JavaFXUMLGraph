@@ -1,5 +1,6 @@
 package org.tera201.umlgraph.containers;
 
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.geometry.Bounds;
@@ -33,6 +34,9 @@ public class ContentZoomPane extends BorderPane {
      */
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Node content;
+    private final Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
+    Text label = new Text("Zoom");
+    VBox paneSlider = new VBox(slider, label);
 
     private static final double MIN_SCALE = 0.3;
     private static final double MAX_SCALE = 2;
@@ -44,13 +48,9 @@ public class ContentZoomPane extends BorderPane {
         }
 
         this.content = content;
-
-        Node center = content;
         content.toFront();
-
-        setCenter(center);
-        setRight(createSlider());
-
+        setCenter(content);
+        setRight(updateSlider());
         enablePanAndZoom();
     }
 
@@ -62,9 +62,16 @@ public class ContentZoomPane extends BorderPane {
         scaleFactorProperty.setValue(1);
     }
 
-    private Node createSlider() {
+    public void update() {
+        Platform.runLater(() -> {
+            this.getChildren().remove(content);
+            this.getChildren().add(content);
+            this.getChildren().remove(paneSlider);
+            this.setRight(paneSlider);
+        });
+    }
 
-        Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
+    private Node updateSlider() {
         slider.setOrientation(Orientation.VERTICAL);
         slider.setShowTickMarks(true);
         slider.setShowTickLabels(true);
@@ -73,10 +80,6 @@ public class ContentZoomPane extends BorderPane {
         slider.setMinorTickCount(1);
         slider.setBlockIncrement(0.125f);
         slider.setSnapToTicks(true);
-
-        Text label = new Text("Zoom");
-
-        VBox paneSlider = new VBox(slider, label);
 
         paneSlider.setPadding(new Insets(10, 10, 10, 10));
         paneSlider.setSpacing(10);

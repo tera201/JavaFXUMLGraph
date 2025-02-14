@@ -2,7 +2,7 @@ package org.tera201.umlgraph.graphview.strategy;
 
 import java.util.Map;
 
-import org.tera201.umlgraph.graph.Graph;
+import org.tera201.umlgraph.graph.Digraph;
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
@@ -33,5 +33,5 @@ public interface PlacementStrategy {
      * @param vertices  Collection of {@link GraphVertex} to place.
      *                  
      */
-    public <V,E> void place(double width, double height, Graph<V,E> theGraph, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes);
+    <V,E> void place(double width, double height, Digraph<V,E> theGraph, Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes);
 }

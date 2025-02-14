@@ -1,25 +1,18 @@
 package org.tera201.umlgraph;
 
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.tera201.umlgraph.containers.GraphDemoContainer;
 import org.tera201.umlgraph.graph.DigraphEdgeList;
 import org.tera201.umlgraph.graphview.GraphPanel;
-import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
 import org.tera201.umlgraph.graphview.strategy.DigraphTreePlacementStrategy;
 import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 import org.tera201.umlgraph.graph.Vertex;
-import org.tera201.umlgraph.graph.Graph;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
 import org.tera201.umlgraph.graph.Digraph;
-import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 
 /**
  *
@@ -30,10 +23,10 @@ public class Main extends Application {
     @Override
     public void start(Stage ignored) {
 
-        Graph<String, String> g = build_sample4_digraph();
+        Digraph<String, String> g = build_sample4_digraph();
         System.out.println(g);
         PlacementStrategy strategy = new DigraphTreePlacementStrategy();
-        GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
+        GraphPanel<String, String> graphView = new GraphPanel<>(g, null,  strategy, null);
 
         /*
         Basic usage:            
@@ -54,20 +47,6 @@ public class Main extends Application {
         to initially place the vertices according to the placement strategy
         */
         graphView.init();
-
-        /*
-        Should proceed with automatic layout or keep original placement?
-        If using SmartGraphDemoContainer you can toggle this in the UI 
-         */
-        //graphView.setAutomaticLayout(true);
-
-        /* 
-        Uncomment lines to test adding of new elements
-         */
-        //continuously_test_adding_elements(g, graphView);
-        //stage.setOnCloseRequest(event -> {
-        //    running = false;
-        //});
     }
 
     /**
@@ -76,7 +55,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    private Graph<String, String> build_sample4_digraph() {
+    private Digraph<String, String> build_sample4_digraph() {
 
         Digraph<String, String> g = new DigraphEdgeList<>();
         Vertex a = g.insertVertex("A", ElementTypes.PACKAGE, "<<package>> A\n included: B, C, D");
@@ -101,7 +80,7 @@ public class Main extends Application {
 
         return g;
     }
-    private Graph<String, String> build_sample3_digraph() {
+    private Digraph<String, String> build_sample3_digraph() {
 
         Digraph<String, String> g = new DigraphEdgeList<>();
 
@@ -116,71 +95,5 @@ public class Main extends Application {
         g.insertEdge(a, d, "AD", ArrowTypes.COMPOSITION);
 
         return g;
-    }
-
-    private static final Random random = new Random(/* seed to reproduce*/);
-
-    private void continuously_test_adding_elements(Graph<String, String> g, GraphPanel<String, String> graphView) {
-        //update graph
-        var running = true;
-        final long ITERATION_WAIT = 3000; //milliseconds
-
-        Runnable r;
-        r = () -> {
-            int count = 0;
-            
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            while (running) {
-                try {
-                    Thread.sleep(ITERATION_WAIT);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                //generate new vertex with 2/3 probability, else connect two
-                //existing
-                String id = String.format("%02d", ++count);
-                if (random.nextInt(3) < 2) {
-                    //add a new vertex connected to a random existing vertex
-                    Vertex<String> existing = get_random_vertex(g);
-                    Vertex<String> vertexId = g.insertVertex(("V" + id));
-                    g.insertEdge(existing, vertexId, ("E" + id));
-                    
-                    //this variant must be called to ensure the view has reflected the
-                    //underlying graph before styling a node immediately after.
-                    graphView.updateAndWait();
-                } else {
-                    Vertex<String> existing1 = get_random_vertex(g);
-                    Vertex<String> existing2 = get_random_vertex(g);
-                    g.insertEdge(existing1, existing2, ("E" + id));
-                    
-                    graphView.update();
-                }
-
-                
-            }
-        };
-
-        new Thread(r).start();
-    }
-
-    private static Vertex<String> get_random_vertex(Graph<String, String> g) {
-
-        int size = g.numVertices();
-        int rand = random.nextInt(size);
-        Vertex<String> existing = null;
-        int i = 0;
-        for (Vertex<String> v : g.vertices()) {
-            existing = v;
-            if (i++ == rand) {
-                break;
-            }
-        }
-        return existing;
     }
 }

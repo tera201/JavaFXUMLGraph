@@ -1,6 +1,5 @@
 package org.tera201.umlgraph.graphview.vertices;
 
-import org.tera201.umlgraph.graph.Graph;
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graphview.GraphPanel;
 import org.tera201.umlgraph.graphview.StylableNode;
