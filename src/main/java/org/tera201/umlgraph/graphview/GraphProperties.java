@@ -46,15 +46,6 @@ public class GraphProperties {
     private static final int DEFAULT_ARROW_SIZE = 5;
     private static final String PROPERTY_ARROW_SIZE = "edge.arrowsize";
 
-    private static final double DEFAULT_REPULSION_FORCE = 25000;
-    private static final String PROPERTY_REPULSION_FORCE = "layout.repulsive-force";
-    
-    private static final double DEFAULT_ATTRACTION_FORCE = 30;
-    private static final String PROPERTY_ATTRACTION_FORCE = "layout.attraction-force";
-
-    private static final double DEFAULT_ATTRACTION_SCALE = 10;
-    private static final String PROPERTY_ATTRACTION_SCALE = "layout.attraction-scale";
-
     private static final String DEFAULT_FILE = "smartgraph.properties";
     private Properties properties;
     
@@ -70,32 +61,6 @@ public class GraphProperties {
             properties.load(inputStream);
         } catch (IOException ex) {
             String msg = String.format("The default %s was not found. Using default values. %s", DEFAULT_FILE, ex);
-            Logger.getLogger(GraphProperties.class.getName()).log(Level.WARNING, msg);
-        }
-    }
-    
-    /**
-     * Reads properties from the desired input stream.
-     * 
-     * @param inputStream   input stream from where to read the properties
-     */
-    public GraphProperties(InputStream inputStream) {
-        properties = new Properties();
-        try {
-            properties.load(inputStream);
-        } catch (IOException ex) {
-            String msg = "The file provided by the input stream does not exist. Using default values.";
-            Logger.getLogger(GraphProperties.class.getName()).log(Level.WARNING, msg);
-        }
-    }
-    
-    public GraphProperties(String content) {
-        properties = new Properties();
-        try {
-            InputStream targetStream = new ByteArrayInputStream(content.getBytes());
-            properties.load(targetStream);
-        } catch (IOException ex) {
-            String msg = "The string contents could not be loaded. Using default values.";
             Logger.getLogger(GraphProperties.class.getName()).log(Level.WARNING, msg);
         }
     }
@@ -117,36 +82,6 @@ public class GraphProperties {
      */
     public double getVertexRadius() {
         return getDoubleProperty(PROPERTY_VERTEX_RADIUS, DEFAULT_VERTEX_RADIUS);
-    }
-    
-    /**
-     * Returns a property that indicates the repulsion force to use in the
-     * automatic force-based layout.
-     * 
-     * @return corresponding property value
-     */
-    public double getRepulsionForce() {
-        return getDoubleProperty(PROPERTY_REPULSION_FORCE, DEFAULT_REPULSION_FORCE);
-    }
-    
-    /**
-     * Returns a property that indicates the attraction force to use in the
-     * automatic force-based layout.
-     * 
-     * @return corresponding property value
-     */
-    public double getAttractionForce() {
-        return getDoubleProperty(PROPERTY_ATTRACTION_FORCE, DEFAULT_ATTRACTION_FORCE);
-    }
-    
-    /**
-     * Returns a property that indicates the attraction scale to use in the
-     * automatic force-based layout.
-     * 
-     * @return corresponding property value
-     */
-    public double getAttractionScale() {
-        return getDoubleProperty(PROPERTY_ATTRACTION_SCALE, DEFAULT_ATTRACTION_SCALE);
     }
     
     /**

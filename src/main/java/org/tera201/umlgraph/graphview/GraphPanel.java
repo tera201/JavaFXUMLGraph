@@ -8,38 +8,30 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.collections.ListChangeListener;
+import javafx.util.Pair;
+import org.tera201.umlgraph.graph.Edge;
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
 import org.tera201.umlgraph.graphview.arrows.DiamondArrow;
 import org.tera201.umlgraph.graphview.arrows.SimpleArrow;
 import org.tera201.umlgraph.graphview.arrows.TriangleArrow;
-import org.tera201.umlgraph.graphview.edges.Edge;
 import org.tera201.umlgraph.graphview.edges.EdgeBase;
 import org.tera201.umlgraph.graphview.edges.EdgeCurve;
 import org.tera201.umlgraph.graphview.edges.EdgeLine;
 import org.tera201.umlgraph.graphview.labels.Label;
 import org.tera201.umlgraph.graphview.labels.LabelSource;
-import org.tera201.umlgraph.graphview.utils.UtilitiesJavaFX;
+import org.tera201.umlgraph.graphview.strategy.DigraphTreePlacementStrategy;
 import org.tera201.umlgraph.graphview.utils.UtilitiesPoint2D;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
-import org.tera201.umlgraph.graphview.strategy.RandomPlacementStrategy;
-import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.geometry.Point2D;
@@ -65,7 +57,7 @@ import java.util.concurrent.TimeoutException;
  * {@link #update()} to force the rendering of any new elements and, also, the
  * removal of others, if applicable.
  * <br>
- * Vertices can be dragged by the user, if configured to do so. Consequently, 
+ * Vertices can be dragged by the user, if configured to do so. Consequently,
  * any connected edges will also adjust automatically to the new vertex positioning.
  *
  * @param <V> Type of element stored at a vertex
@@ -75,7 +67,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class GraphPanel<V, E> extends Pane {
 
-    /* 
+    /*
     CONFIGURATION PROPERTIES
      */
     private final GraphProperties graphProperties;
@@ -83,57 +75,14 @@ public class GraphPanel<V, E> extends Pane {
     /*
     INTERNAL DATA STRUCTURE
      */
-    private Graph<V, E> theGraph;
+    private final Graph<V, E> theGraph;
     private final PlacementStrategy placementStrategy;
     private final Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes;
-    private final Map<org.tera201.umlgraph.graph.Edge<E, V>, EdgeBase> edgeNodes;
-    private Map<org.tera201.umlgraph.graph.Edge<E,V>, Tuple<Vertex<V>>> connections;
-    private final Map<Tuple<GraphVertexPaneNode>, Integer> placedEdges = new HashMap<>();
+    private final Map<Edge<E, V>, EdgeBase<E, V>> edgeNodes;
+    private final Map<Edge<E,V>, Pair<Vertex<V>, Vertex<V>>> connections;
+    private final Map<Pair<GraphVertexPaneNode<V>, GraphVertexPaneNode<V>>, Integer> placedEdges = new HashMap<>();
     private boolean initialized = false;
     private final boolean edgesWithArrows;
-
-    /*
-    INTERACTION WITH VERTICES AND EDGES
-     */
-    private Consumer<GraphVertex<V>> vertexClickConsumer = null;
-    private Consumer<Edge<E, V>> edgeClickConsumer = null;
-
-    /*
-    AUTOMATIC LAYOUT RELATED ATTRIBUTES
-     */
-    public final BooleanProperty automaticLayoutProperty;
-    private AnimationTimer timer;
-    private final double repulsionForce;
-    private final double attractionForce;
-    private final double attractionScale;
-
-    //This value was obtained experimentally
-    private static final int AUTOMATIC_LAYOUT_ITERATIONS = 20;
-
-    /**
-     * Constructs a visualization of the graph referenced by
-     * <code>theGraph</code>, using default properties and default random
-     * placement of vertices.
-     *
-     * @param theGraph underlying graph
-     *
-     * @see Graph
-     */
-    public GraphPanel(Graph<V, E> theGraph) {
-        this(theGraph, new GraphProperties(), null);
-    }
-
-    /**
-     * Constructs a visualization of the graph referenced by
-     * <code>theGraph</code>, using custom properties and default random
-     * placement of vertices.
-     *
-     * @param theGraph underlying graph
-     * @param properties custom properties
-     */
-    public GraphPanel(Graph<V, E> theGraph, GraphProperties properties) {
-        this(theGraph, properties, null);
-    }
 
     /**
      * Constructs a visualization of the graph referenced by
@@ -144,22 +93,7 @@ public class GraphPanel<V, E> extends Pane {
      * @param placementStrategy placement strategy, null for default
      */
     public GraphPanel(Graph<V, E> theGraph, PlacementStrategy placementStrategy) {
-        this(theGraph, null, placementStrategy);
-    }
-
-    /**
-     * Constructs a visualization of the graph referenced by
-     * <code>theGraph</code>, using custom properties and custom placement of
-     * vertices.
-     *
-     * @param theGraph underlying graph
-     * @param properties custom properties, null for default
-     * @param placementStrategy placement strategy, null for default
-     */
-    public GraphPanel(Graph<V, E> theGraph, GraphProperties properties,
-                      PlacementStrategy placementStrategy) {
-
-        this(theGraph, properties, placementStrategy, null);
+        this(theGraph, null, placementStrategy, null);
     }
 
     /**
@@ -180,13 +114,9 @@ public class GraphPanel<V, E> extends Pane {
         }
         this.theGraph = theGraph;
         this.graphProperties = properties != null ? properties : new GraphProperties();
-        this.placementStrategy = placementStrategy != null ? placementStrategy : new RandomPlacementStrategy();
+        this.placementStrategy = placementStrategy != null ? placementStrategy : new DigraphTreePlacementStrategy();
 
         this.edgesWithArrows = this.graphProperties.getUseEdgeArrow();
-
-        this.repulsionForce = this.graphProperties.getRepulsionForce();
-        this.attractionForce = this.graphProperties.getAttractionForce();
-        this.attractionScale = this.graphProperties.getAttractionScale();
 
         vertexNodes = new HashMap<>();
         edgeNodes = new HashMap<>();
@@ -197,35 +127,6 @@ public class GraphPanel<V, E> extends Pane {
 
         initNodes();
 
-        enableDoubleClickListener();
-
-        //automatic layout initializations
-        timer = new AnimationTimer() {
-
-            @Override
-            public void handle(long now) {
-                runLayoutIteration();
-            }
-        };
-
-        this.automaticLayoutProperty = new SimpleBooleanProperty(false);
-        this.automaticLayoutProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                timer.start();
-            } else {
-                timer.stop();
-            }
-        });
-
-    }
-
-    private synchronized void runLayoutIteration() {
-        for (int i = 0; i < AUTOMATIC_LAYOUT_ITERATIONS; i++) {
-            resetForces();
-            computeForces();
-            updateForces();
-        }
-        applyForces();
     }
 
     /**
@@ -257,14 +158,10 @@ public class GraphPanel<V, E> extends Pane {
                     this.theGraph,
                     this.vertexNodes);
         } else {
-            //apply random placement
-            new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
+            new DigraphTreePlacementStrategy().place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
                     this.vertexNodes);
-
-            //start automatic layout
-            timer.start();
         }
 
         this.getChildren().addListener((ListChangeListener<Node>) c -> {
@@ -286,29 +183,6 @@ public class GraphPanel<V, E> extends Pane {
         this.initialized = true;
     }
 
-    public void setTheGraph(Graph<V, E> theGraph) {
-        this.theGraph = theGraph;
-        updateAndWait();
-    }
-
-    /**
-     * Returns the property used to toggle the automatic layout of vertices.
-     *
-     * @return  automatic layout property
-     */
-    public BooleanProperty automaticLayoutProperty() {
-        return this.automaticLayoutProperty;
-    }
-
-    /**
-     * Toggle the automatic layout of vertices.
-     *
-     * @param value     true if enabling; false, otherwise
-     */
-    public void setAutomaticLayout(boolean value) {
-        automaticLayoutProperty.set(value);
-    }
-
     /**
      * Forces a refresh of the visualization based on current state of the
      * underlying graph, immediately returning to the caller.
@@ -318,9 +192,6 @@ public class GraphPanel<V, E> extends Pane {
      * immediately after this method finishes. That is, this method
      * immediately returns to the caller without waiting for the update to the
      * visualization.
-     * <p>
-     * New vertices will be added close to adjacent ones or randomly for
-     * isolated vertices.
      */
     public void update() {
         if (this.getScene() == null) {
@@ -332,9 +203,7 @@ public class GraphPanel<V, E> extends Pane {
         }
 
         //this will be called from a non-javafx thread, so this must be guaranteed to run of the graphics thread
-        Platform.runLater(() -> {
-            updateNodes();
-        });
+        Platform.runLater(this::updateNodes);
 
     }
 
@@ -392,13 +261,10 @@ public class GraphPanel<V, E> extends Pane {
                     this.vertexNodes);
         } else {
             //apply random placement
-            new RandomPlacementStrategy().place(this.widthProperty().doubleValue(),
+            new DigraphTreePlacementStrategy().place(this.widthProperty().doubleValue(),
                     this.heightProperty().doubleValue(),
                     this.theGraph,
                     this.vertexNodes);
-
-            //start automatic layout
-            timer.start();
         }
     }
 
@@ -409,47 +275,26 @@ public class GraphPanel<V, E> extends Pane {
     }
 
     /*
-    INTERACTION WITH VERTICES AND EDGES
-     */
-    /**
-     * Sets the action that should be performed when a vertex is double clicked.
-     *
-     * @param action action to be performed
-     */
-    public void setVertexDoubleClickAction(Consumer<GraphVertex<V>> action) {
-        this.vertexClickConsumer = action;
-    }
-
-    /**
-     * Sets the action that should be performed when an edge is double clicked.
-     *
-     * @param action action to be performed
-     */
-    public void setEdgeDoubleClickAction(Consumer<Edge<E, V>> action) {
-        this.edgeClickConsumer = action;
-    }
-
-    /*
     NODES CREATION/UPDATES
      */
     private void initNodes() {
 
         /* create vertex graphical representations */
         for (Vertex<V> vertex : listOfVertices()) {
-            GraphVertexPaneNode<V> vertexAnchor = new GraphVertexPaneNode(vertex, 0, 0,
+            GraphVertexPaneNode<V> vertexAnchor = new GraphVertexPaneNode<>(vertex, 0, 0,
                     graphProperties.getVertexRadius(), graphProperties.getVertexAllowUserMove());
             vertexNodes.put(vertex, vertexAnchor);
         }
 
         /* create edges graphical representations between existing vertices */
         //this is used to guarantee that no duplicate edges are ever inserted
-        List<org.tera201.umlgraph.graph.Edge<E, V>> edgesToPlace = listOfEdges();
+        List<Edge<E, V>> edgesToPlace = listOfEdges();
 
         for (Vertex<V> vertex : vertexNodes.keySet()) {
 
-            Iterable<org.tera201.umlgraph.graph.Edge<E, V>> incidentEdges = theGraph.incidentEdges(vertex);
+            Iterable<Edge<E, V>> incidentEdges = theGraph.incidentEdges(vertex);
 
-            for (org.tera201.umlgraph.graph.Edge<E, V> edge : incidentEdges) {
+            for (Edge<E, V> edge : incidentEdges) {
 
                 //if already plotted, ignore edge.
                 if (!edgesToPlace.contains(edge)) {
@@ -464,10 +309,10 @@ public class GraphPanel<V, E> extends Pane {
                 graphVertexIn.addAdjacentVertex(graphVertexOppositeOut);
                 graphVertexOppositeOut.addAdjacentVertex(graphVertexIn);
 
-                EdgeBase graphEdge = createEdge(edge, graphVertexIn, graphVertexOppositeOut);
+                EdgeBase<E, V> graphEdge = createEdge(edge, graphVertexIn, graphVertexOppositeOut);
 
                 /* Track Edges already placed */
-                connections.put(edge, new Tuple<>(vertex, oppositeVertex));
+                connections.put(edge, new Pair<>(vertex, oppositeVertex));
                 addEdge(graphEdge, edge);
 
                 if (this.edgesWithArrows) {
@@ -500,27 +345,27 @@ public class GraphPanel<V, E> extends Pane {
         }
     }
 
-    private EdgeBase createEdge(org.tera201.umlgraph.graph.Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexInbound, GraphVertexPaneNode<V> graphVertexOutbound) {
+    private EdgeBase<E, V> createEdge(Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexInbound, GraphVertexPaneNode<V> graphVertexOutbound) {
         /*
         Even if edges are later removed, the corresponding index remains the same. Otherwise, we would have to
         regenerate the appropriate edges.
          */
         int edgeIndex = 0;
-        Integer counter = placedEdges.get(new Tuple(graphVertexInbound, graphVertexOutbound));
+        Integer counter = placedEdges.get(new Pair<>(graphVertexInbound, graphVertexOutbound));
         if (counter != null) {
             edgeIndex = counter;
         }
 
-        EdgeBase graphEdge;
+        EdgeBase<E, V> graphEdge;
 
         if (getTotalEdgesBetween(graphVertexInbound.getUnderlyingVertex(), graphVertexOutbound.getUnderlyingVertex()) > 1
                 || graphVertexInbound == graphVertexOutbound) {
-            graphEdge = new EdgeCurve(edge, graphVertexInbound, graphVertexOutbound, edgeIndex);
+            graphEdge = new EdgeCurve<>(edge, graphVertexInbound, graphVertexOutbound, edgeIndex);
         } else {
             graphEdge = new EdgeLine<>(edge, graphVertexInbound, graphVertexOutbound);
         }
 
-        placedEdges.put(new Tuple(graphVertexInbound, graphVertexOutbound), ++edgeIndex);
+        placedEdges.put(new Pair<>(graphVertexInbound, graphVertexOutbound), ++edgeIndex);
 
         return graphEdge;
     }
@@ -546,7 +391,7 @@ public class GraphPanel<V, E> extends Pane {
         }
     }
 
-    private void addEdge(EdgeBase e, org.tera201.umlgraph.graph.Edge<E, V> edge) {
+    private void addEdge(EdgeBase<E, V> e, Edge<E, V> edge) {
         //edges to the back
         this.getChildren().add(0, (Node) e);
         edgeNodes.put(edge, e);
@@ -585,13 +430,13 @@ public class GraphPanel<V, E> extends Pane {
                 //Place new nodes in the vicinity of existing adjacent ones;
                 //Place them in the middle of the plot, otherwise.
                 double x, y;
-                Collection<org.tera201.umlgraph.graph.Edge<E, V>> incidentEdges = theGraph.incidentEdges(vertex);
+                Collection<Edge<E, V>> incidentEdges = theGraph.incidentEdges(vertex);
                 if (incidentEdges.isEmpty()) {
                     /* not (yet) connected, put in the middle of the plot */
                     x = mx;
                     y = my;
                 } else {
-                    org.tera201.umlgraph.graph.Edge<E, V> firstEdge = incidentEdges.iterator().next();
+                    Edge<E, V> firstEdge = incidentEdges.iterator().next();
                     Vertex<V> opposite = theGraph.opposite(vertex, firstEdge);
                     GraphVertexPaneNode<V> existing = vertexNodes.get(opposite);
 
@@ -614,7 +459,7 @@ public class GraphPanel<V, E> extends Pane {
                     }
                 }
 
-                GraphVertexPaneNode newVertex = new GraphVertexPaneNode<>(vertex,
+                GraphVertexPaneNode<V> newVertex = new GraphVertexPaneNode<>(vertex,
                         x, y, graphProperties.getVertexRadius(), graphProperties.getVertexAllowUserMove());
 
                 //track new nodes
@@ -625,9 +470,9 @@ public class GraphPanel<V, E> extends Pane {
 
         }
 
-        Collection<org.tera201.umlgraph.graph.Edge<E, V>> unplottedEdges = unplottedEdges();
+        Collection<Edge<E, V>> unplottedEdges = unplottedEdges();
         if (!unplottedEdges.isEmpty()) {
-            for (org.tera201.umlgraph.graph.Edge<E, V> edge : unplottedEdges) {
+            for (Edge<E, V> edge : unplottedEdges) {
 
                 Vertex<V>[] vertices = edge.vertices();
                 Vertex<V> u = vertices[0]; //oubound if digraph, by javadoc requirement
@@ -648,7 +493,7 @@ public class GraphPanel<V, E> extends Pane {
                 graphVertexOut.addAdjacentVertex(graphVertexIn);
                 graphVertexIn.addAdjacentVertex(graphVertexOut);
 
-                EdgeBase graphEdge = createEdge(edge, graphVertexIn, graphVertexOut);
+                EdgeBase<E, V> graphEdge = createEdge(edge, graphVertexIn, graphVertexOut);
 
                 if (this.edgesWithArrows) {
                     DefaultArrow arrow = new DiamondArrow(this.graphProperties.getEdgeArrowSize());
@@ -657,7 +502,7 @@ public class GraphPanel<V, E> extends Pane {
                 }
 
                  /* Track edges */
-                connections.put(edge, new Tuple<>(u, v));
+                connections.put(edge, new Pair<>(u, v));
                 addEdge(graphEdge, edge);
 
             }
@@ -673,19 +518,19 @@ public class GraphPanel<V, E> extends Pane {
 
     private void removeNodes() {
          //remove edges (graphical elements) that were removed from the underlying graph
-        Collection<org.tera201.umlgraph.graph.Edge<E, V>> removedEdges = removedEdges();
-        for (org.tera201.umlgraph.graph.Edge<E, V> e : removedEdges) {
-            EdgeBase edgeToRemove = edgeNodes.get(e);
+        Collection<Edge<E, V>> removedEdges = removedEdges();
+        for (Edge<E, V> e : removedEdges) {
+            EdgeBase<E, V> edgeToRemove = edgeNodes.get(e);
             edgeNodes.remove(e);
             removeEdge(edgeToRemove);   //remove from panel
 
             //when edges are removed, the adjacency between vertices changes
             //the adjacency is kept in parallel in an internal data structure
-            Tuple<Vertex<V>> vertexTuple = connections.get(e);
+            Pair<Vertex<V>, Vertex<V>> vertexPair = connections.get(e);
 
-            if( getTotalEdgesBetween(vertexTuple.first, vertexTuple.second) == 0 ) {
-                GraphVertexPaneNode<V> v0 = vertexNodes.get(vertexTuple.first);
-                GraphVertexPaneNode<V> v1 = vertexNodes.get(vertexTuple.second);
+            if( getTotalEdgesBetween(vertexPair.getKey(), vertexPair.getValue()) == 0 ) {
+                GraphVertexPaneNode<V> v0 = vertexNodes.get(vertexPair.getKey());
+                GraphVertexPaneNode<V> v1 = vertexNodes.get(vertexPair.getValue());
 
                 v0.removeAdjacentVertex(v1);
                 v1.removeAdjacentVertex(v0);
@@ -703,7 +548,7 @@ public class GraphPanel<V, E> extends Pane {
 
     }
 
-    private void removeEdge(EdgeBase e) {
+    private void removeEdge(EdgeBase<E, V> e) {
         getChildren().remove((Node) e);
 
         DefaultArrow attachedArrow = e.getAttachedArrow();
@@ -717,7 +562,7 @@ public class GraphPanel<V, E> extends Pane {
         }
     }
 
-    private void removeVertex(GraphVertexPaneNode v) {
+    private void removeVertex(GraphVertexPaneNode<V> v) {
         getChildren().remove(v);
 
         Text attachedLabel = v.getAttachedLabel();
@@ -743,7 +588,7 @@ public class GraphPanel<V, E> extends Pane {
         });
 
         theGraph.edges().forEach((e) -> {
-            EdgeBase edgeNode = edgeNodes.get(e);
+            EdgeBase<E, V> edgeNode = edgeNodes.get(e);
             if (edgeNode != null) {
                 Label label = edgeNode.getAttachedLabel();
                 if (label != null) {
@@ -752,25 +597,6 @@ public class GraphPanel<V, E> extends Pane {
                 }
             }
         });
-    }
-
-    @Deprecated
-    private String generateVertexLabel(V vertex) {
-
-        try {
-            Class<?> clazz = vertex.getClass();
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (method.isAnnotationPresent(LabelSource.class)) {
-                    method.setAccessible(true);
-                    Object value = method.invoke(vertex);
-                    return value.toString();
-                }
-            }
-        } catch (SecurityException | IllegalAccessException  | IllegalArgumentException |InvocationTargetException ex) {
-            Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return vertex != null ? vertex.toString() : "<NULL>";
     }
 
     private String generateEdgeLabel(E edge) {
@@ -800,7 +626,7 @@ public class GraphPanel<V, E> extends Pane {
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE,
                 maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
 
-        if(vertexNodes.size() == 0) return new Rectangle2D(0, 0, getWidth(), getHeight());//BoundingBox(0, 0, getWidth(), getHeight());
+        if(vertexNodes.isEmpty()) return new Rectangle2D(0, 0, getWidth(), getHeight());
 
         for (GraphVertexPaneNode<V> v : vertexNodes.values()) {
             minX = Math.min(minX, v.getCenterX());
@@ -812,70 +638,9 @@ public class GraphPanel<V, E> extends Pane {
         return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
     }
 
-
-    /*
-    * AUTOMATIC LAYOUT
-     */
-    private void computeForces() {
-        for (GraphVertexPaneNode<V> v : vertexNodes.values()) {
-            for (GraphVertexPaneNode<V> other : vertexNodes.values()) {
-                if (v == other) {
-                    continue; //NOP
-                }
-
-                //double k = Math.sqrt(getWidth() * getHeight() / graphVertexMap.size());
-                Point2D repellingForce = UtilitiesPoint2D.repellingForce(v.getUpdatedPosition(), other.getUpdatedPosition(), this.repulsionForce);
-
-                double deltaForceX = 0, deltaForceY = 0;
-
-                //compute attractive and reppeling forces
-                //opt to use internal areAdjacent check, because a vertex can be removed from
-                //the underlying graph before we have the chance to remove it from our
-                //internal data structure
-                if (areAdjacent(v, other)) {
-
-                    Point2D attractiveForce = UtilitiesPoint2D.attractiveForce(v.getUpdatedPosition(), other.getUpdatedPosition(),
-                            vertexNodes.size(), this.attractionForce, this.attractionScale);
-
-                    deltaForceX = attractiveForce.getX() + repellingForce.getX();
-                    deltaForceY = attractiveForce.getY() + repellingForce.getY();
-                } else {
-                    deltaForceX = repellingForce.getX();
-                    deltaForceY = repellingForce.getY();
-                }
-
-                v.addForceVector(deltaForceX, deltaForceY);
-            }
-        }
-    }
-
-    private boolean areAdjacent(GraphVertexPaneNode<V> v, GraphVertexPaneNode<V> u) {
-        return v.isAdjacentTo(u);
-    }
-
-    private void updateForces() {
-        vertexNodes.values().forEach((v) -> {
-            v.updateDelta();
-        });
-    }
-
-    private void applyForces() {
-        vertexNodes.values().forEach((v) -> {
-            v.moveFromForces();
-        });
-    }
-
-    private void resetForces() {
-        vertexNodes.values().forEach((v) -> {
-            v.resetForces();
-        });
-    }
-
     private int getTotalEdgesBetween(Vertex<V> v, Vertex<V> u) {
-        //TODO: It may be necessary to adjust this method if you use another Graph
-        //variant, e.g., Digraph (directed graph)
         int count = 0;
-        for (org.tera201.umlgraph.graph.Edge<E, V> edge : theGraph.edges()) {
+        for (Edge<E, V> edge : theGraph.edges()) {
             if (edge.vertices()[0] == v && edge.vertices()[1] == u
                     || edge.vertices()[0] == u && edge.vertices()[1] == v) {
                 count++;
@@ -884,20 +649,12 @@ public class GraphPanel<V, E> extends Pane {
         return count;
     }
 
-    private List<org.tera201.umlgraph.graph.Edge<E, V>> listOfEdges() {
-        List<org.tera201.umlgraph.graph.Edge<E, V>> list = new LinkedList<>();
-        for (org.tera201.umlgraph.graph.Edge<E, V> edge : theGraph.edges()) {
-            list.add(edge);
-        }
-        return list;
+    private List<Edge<E, V>> listOfEdges() {
+        return new LinkedList<>(theGraph.edges());
     }
 
     private List<Vertex<V>> listOfVertices() {
-        List<Vertex<V>> list = new LinkedList<>();
-        for (Vertex<V> vertex : theGraph.vertices()) {
-            list.add(vertex);
-        }
-        return list;
+        return new LinkedList<>(theGraph.vertices());
     }
 
     /**
@@ -945,13 +702,13 @@ public class GraphPanel<V, E> extends Pane {
      *
      * @return collection of edges
      */
-    private Collection<org.tera201.umlgraph.graph.Edge<E, V>> removedEdges() {
-        List<org.tera201.umlgraph.graph.Edge<E, V>> removed = new LinkedList<>();
+    private Collection<Edge<E, V>> removedEdges() {
+        List<Edge<E, V>> removed = new LinkedList<>();
 
-        Collection<org.tera201.umlgraph.graph.Edge<E, V>> graphEdges = theGraph.edges();
-        Collection<EdgeBase> plotted = edgeNodes.values();
+        Collection<Edge<E, V>> graphEdges = theGraph.edges();
+        Collection<EdgeBase<E, V>> plotted = edgeNodes.values();
 
-        for (EdgeBase e : plotted) {
+        for (EdgeBase<E, V> e : plotted) {
             if (!graphEdges.contains(e.getUnderlyingEdge())) {
                 removed.add(e.getUnderlyingEdge());
             }
@@ -966,10 +723,10 @@ public class GraphPanel<V, E> extends Pane {
      *
      * @return collection of edges
      */
-    private Collection<org.tera201.umlgraph.graph.Edge<E, V>> unplottedEdges() {
-        List<org.tera201.umlgraph.graph.Edge<E, V>> unplotted = new LinkedList<>();
+    private Collection<Edge<E, V>> unplottedEdges() {
+        List<Edge<E, V>> unplotted = new LinkedList<>();
 
-        for (org.tera201.umlgraph.graph.Edge<E, V> e : theGraph.edges()) {
+        for (Edge<E, V> e : theGraph.edges()) {
             if (!edgeNodes.containsKey(e)) {
                 unplotted.add(e);
             }
@@ -977,126 +734,6 @@ public class GraphPanel<V, E> extends Pane {
 
         return unplotted;
     }
-
-    /**
-     * Sets a vertex position (its center) manually.
-     *
-     * The positioning should be inside the boundaries of the panel, but
-     * no restrictions are enforced by this method, so be aware.
-     *
-     * @param v underlying vertex
-     * @param x x-coordinate on panel
-     * @param y y-coordinate on panel
-     */
-    public void setVertexPosition(Vertex<V> v, double x, double y) {
-        GraphVertexPaneNode<V> node = vertexNodes.get(v);
-        if(node != null) {
-            node.setPosition(x, y);
-        }
-    }
-
-    /**
-     * Return the current x-coordinate (relative to the panel) of a vertex.
-     *
-     * @param v underlying vertex
-     * @return the x-coordinate or NaN if the vertex does not exist
-     */
-    public double getVertexPositionX(Vertex<V> v) {
-        GraphVertexPaneNode<V> node = vertexNodes.get(v);
-        if(node != null) {
-            return node.getPositionCenterX();
-        }
-        return Double.NaN;
-    }
-
-    /**
-     * Return the current y-coordinate (relative to the panel) of a vertex.
-     *
-     * @param v underlying vertex
-     * @return the y-coordinate or NaN if the vertex does not exist
-     */
-    public double getVertexPositionY(Vertex<V> v) {
-        GraphVertexPaneNode<V> node = vertexNodes.get(v);
-        if(node != null) {
-            return node.getPositionCenterY();
-        }
-        return Double.NaN;
-    }
-
-    /**
-     * Returns the associated stylable element with a graph vertex.
-     *
-     * @param v underlying vertex
-     * @return stylable element
-     */
-    public StylableNode getStylableVertex(Vertex<V> v) {
-        return vertexNodes.get(v);
-    }
-
-    /**
-     * Returns the associated stylable element with a graph vertex.
-     *
-     * @param vertexElement underlying vertex's element
-     * @return stylable element
-     */
-    public StylableNode getStylableVertex(V vertexElement) {
-        for (Vertex<V> v : vertexNodes.keySet()) {
-            if (v.element().equals(vertexElement)) {
-                return vertexNodes.get(v);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the associated stylable element with a graph edge.
-     *
-     * @param edge underlying graph edge
-     * @return stylable element
-     */
-    public StylableNode getStylableEdge(org.tera201.umlgraph.graph.Edge<E, V> edge) {
-        return edgeNodes.get(edge);
-    }
-
-    /**
-     * Returns the associated stylable element with a graph edge.
-     *
-     * @param edgeElement underlying graph edge's element
-     * @return stylable element
-     */
-    public StylableNode getStylableEdge(E edgeElement) {
-        for (org.tera201.umlgraph.graph.Edge<E, V> e : edgeNodes.keySet()) {
-            if (e.element().equals(edgeElement)) {
-                return edgeNodes.get(e);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the associated stylable element with a graph vertex.
-     *
-     * @param v underlying vertex
-     * @return stylable element (label)
-     */
-    public StylableNode getStylableLabel(Vertex<V> v) {
-        GraphVertexPaneNode<V> vertex = vertexNodes.get(v);
-        
-        return vertex != null ? vertex.getStylableLabel() : null;
-    }
-    
-    /**
-     * Returns the associated stylable element with a graph edge.
-     *
-     * @param e underlying graph edge
-     * @return stylable element (label)
-     */
-    public StylableNode getStylableLabel(org.tera201.umlgraph.graph.Edge<E,V> e) {
-        EdgeBase edge = edgeNodes.get(e);
-        
-        return edge != null ? edge.getStylableLabel() : null;
-    }
-   
 
     /**
      * Loads the stylesheet and applies the .graph class to this panel.
@@ -1117,84 +754,6 @@ public class GraphPanel<V, E> extends Pane {
             Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Enables the double click action on this pane.
-     *
-     * This method identifies the node that was clicked and, if any, calls the
-     * appropriate consumer, i.e., vertex or edge consumers.
-     */
-    private void enableDoubleClickListener() {
-        setOnMouseClicked((MouseEvent mouseEvent) -> {
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                if (mouseEvent.getClickCount() == 2) {
-                    //no need to continue otherwise
-                    if (vertexClickConsumer == null && edgeClickConsumer == null) {
-                        return;
-                    }
-
-                    Node node = UtilitiesJavaFX.pick(GraphPanel.this, mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                    if (node == null) {
-                        return;
-                    }
-
-                    if (node instanceof GraphVertex) {
-                        GraphVertex v = (GraphVertex) node;
-                        vertexClickConsumer.accept(v);
-                    } else if (node instanceof Edge) {
-                        Edge e = (Edge) node;
-                        edgeClickConsumer.accept(e);
-                    }
-
-                }
-            }
-        });
-    }
-
-    /**
-     * Represents a tuple in Java.
-     *
-     * @param <T> the type of the tuple
-     */
-    private class Tuple<T> {
-
-        private final T first;
-        private final T second;
-
-        public Tuple(T first, T second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 29 * hash + Objects.hashCode(this.first);
-            hash = 29 * hash + Objects.hashCode(this.second);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Tuple<?> other = (Tuple<?>) obj;
-            if (!Objects.equals(this.first, other.first)) {
-                return false;
-            }
-            if (!Objects.equals(this.second, other.second)) {
-                return false;
-            }
-            return true;
         }
     }
 

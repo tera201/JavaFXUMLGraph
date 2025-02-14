@@ -65,8 +65,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
      */
     public GraphVertexPaneNode(Vertex<T> v, double x, double y, double radius, boolean allowMove) {
         super();
-//        this.setBorder(new Border(new BorderStroke(Color.BLACK,
-//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         this.underlyingVertex = v;
         this.attachedLabel = null;
@@ -116,16 +114,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
     }
 
     /**
-     * Checks whether <code>v</code> is adjacent this instance.
-     *
-     * @param v vertex to check
-     * @return true if adjacent; false otherwise
-     */
-    public boolean isAdjacentTo(GraphVertexPaneNode<T> v) {
-        return this.adjacentVertices.contains(v);
-    }
-
-    /**
      * Returns the current position of the instance in pixels.
      *
      * @return the x,y coordinates in pixels
@@ -158,87 +146,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
     @Override
     public double getPositionCenterY() {
         return this.getLayoutY();
-    }
-
-
-    /**
-     * Sets the position of the instance in pixels.
-     *
-     * @param p coordinates
-     */
-    public void setPosition(Point2D p) {
-        setPosition(p.getX(), p.getY());
-    }
-
-    /**
-     * Resets the current computed external force vector.
-     *
-     */
-    public void resetForces() {
-        forceVector.x = forceVector.y = 0;
-        updatedPosition.x = getCenterX();
-        updatedPosition.y = getCenterY();
-    }
-
-    /**
-     * Adds the vector represented by <code>(x,y)</code> to the current external
-     * force vector.
-     *
-     * @param x x-component of the force vector
-     * @param y y-component of the force vector
-     *
-     */
-    public void addForceVector(double x, double y) {
-        forceVector.x += x;
-        forceVector.y += y;
-    }
-
-    /**
-     * Returns the current external force vector.
-     *
-     * @return force vector
-     */
-    public Point2D getForceVector() {
-        return new Point2D(forceVector.x, forceVector.y);
-    }
-
-    /**
-     * Returns the future position of the vertex.
-     *
-     * @return future position
-     */
-    public Point2D getUpdatedPosition() {
-        return new Point2D(updatedPosition.x, updatedPosition.y);
-    }
-
-    /**
-     * Updates the future position according to the current internal force
-     * vector.
-     *
-     * @see GraphPanel#updateForces()
-     */
-    public void updateDelta() {
-        updatedPosition.x = updatedPosition.x /* + speed*/ + forceVector.x;
-        updatedPosition.y = updatedPosition.y + forceVector.y;
-    }
-
-    /**
-     * Moves the vertex position to the computed future position.
-     * <p>
-     * Moves are constrained within the parent pane dimensions.
-     *
-     * @see GraphPanel#applyForces()
-     */
-    public void moveFromForces() {
-
-        //limit movement to parent bounds
-        double height = getParent().getLayoutBounds().getHeight();
-        double width = getParent().getLayoutBounds().getWidth();
-
-        updatedPosition.x = boundCenterCoordinate(updatedPosition.x, 0, width);
-        updatedPosition.y = boundCenterCoordinate(updatedPosition.y, 0, height);
-
-        setPosition(updatedPosition.x, updatedPosition.y);
     }
 
     /**

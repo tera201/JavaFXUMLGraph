@@ -36,14 +36,6 @@ public class Main extends Application {
         GraphPanel<String, String> graphView = new GraphPanel<>(g, strategy);
 
         /*
-        After creating, you can change the styling of some element.
-        This can be done at any time afterwards.
-        */
-        if (g.numVertices() > 0) {
-            graphView.getStylableVertex("A").setStyle("-fx-fill: gold; -fx-stroke: brown;");
-        }
-
-        /*
         Basic usage:            
         Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
         */
@@ -62,35 +54,6 @@ public class Main extends Application {
         to initially place the vertices according to the placement strategy
         */
         graphView.init();
-
-        /*
-        Bellow you can see how to attach actions for when vertices and edges are double clicked
-         */        
-        graphView.setVertexDoubleClickAction((GraphVertex<String> graphVertex) -> {
-            System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-                      
-            //toggle different styling
-            if( !graphVertex.removeStyleClass("myVertex") ) {
-                /* for the golden vertex, this is necessary to clear the inline
-                css class. Otherwise, it has priority. Test and uncomment. */
-                //graphVertex.setStyle(null);
-                
-                graphVertex.addStyleClass("myVertex");
-            }
-        });
-
-        graphView.setEdgeDoubleClickAction(graphEdge -> {
-            System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
-            //dynamically change the style when clicked
-            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-            
-            graphEdge.getStylableArrow().setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-            
-            //uncomment to see edges being removed after click
-            //Edge<String, String> underlyingEdge = graphEdge.getUnderlyingEdge();
-            //g.removeEdge(underlyingEdge);
-            //graphView.update();
-        });
 
         /*
         Should proceed with automatic layout or keep original placement?
@@ -191,12 +154,6 @@ public class Main extends Application {
                     //this variant must be called to ensure the view has reflected the
                     //underlying graph before styling a node immediately after.
                     graphView.updateAndWait();
-                    
-                    //color new vertices
-                    StylableNode stylableVertex = graphView.getStylableVertex(vertexId);
-                    if(stylableVertex != null) {
-                        stylableVertex.setStyle("-fx-fill: orange;");
-                    }
                 } else {
                     Vertex<String> existing1 = get_random_vertex(g);
                     Vertex<String> existing2 = get_random_vertex(g);
