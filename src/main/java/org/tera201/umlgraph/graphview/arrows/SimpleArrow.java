@@ -1,13 +1,13 @@
 package org.tera201.umlgraph.graphview.arrows;
 
-import org.tera201.umlgraph.graphview.edges.Edge;
+import org.tera201.umlgraph.graphview.edges.EdgeBase;
 import org.tera201.umlgraph.graphview.StyleProxy;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
 /**
- * A shape of an arrow to be attached to a {@link Edge}.
+ * A shape of an arrow to be attached to a {@link EdgeBase}.
  * 
  * @author r.naryshkin99
  */

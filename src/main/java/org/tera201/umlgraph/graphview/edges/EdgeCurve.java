@@ -23,11 +23,6 @@ import org.tera201.umlgraph.graph.Edge;
  * <code>inbound</code> {@link GraphVertexPaneNode} center. As such, the curve
  * is updated automatically as the vertices move.
  * <br>
- * Given there can be several curved edges connecting two vertices, when calling
- * the constructor {@link #SmartGraphEdgeCurve(Edge,
- * GraphVertexPaneNode,
- * GraphVertexPaneNode, int) } the <code>edgeIndex</code>
- * can be specified as to create non-overlaping curves.
  *
  * @param <E> Type stored in the underlying edge
  * @param <V> Type of connecting vertex
@@ -51,11 +46,11 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     /* Styling proxy */
     private final StyleProxy styleProxy;
 
-    public EdgeCurve(Edge<E, V> edge, GraphVertex inbound, GraphVertex outbound) {
+    public EdgeCurve(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound) {
         this(edge, inbound, outbound, 0);
     }
 
-    public EdgeCurve(Edge<E, V> edge, GraphVertex inbound, GraphVertex outbound, int edgeIndex) {
+    public EdgeCurve(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound, int edgeIndex) {
         this.inbound = inbound;
         this.outbound = outbound;
 

@@ -1,7 +1,7 @@
 package org.tera201.umlgraph.graphview;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.edges.Edge;
+import org.tera201.umlgraph.graphview.edges.EdgeBase;;
 import org.tera201.umlgraph.graphview.labels.Label;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @see GraphPanel
  * @see GraphVertex
- * @see Edge
+ * @see EdgeBase
  * 
  * @author r.naryshkin99
  */
