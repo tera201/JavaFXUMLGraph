@@ -35,7 +35,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
         List<Edge<E, V>> incidentEdges = new ArrayList<>();
         for (Edge<E, V> edge : edges.values()) {
 
-            if (((EdgeNode<E, V>) edge).getInbound() == inbound) {
+            if (((Edge<E, V>) edge).getInbound() == inbound) {
                 incidentEdges.add(edge);
             }
         }
@@ -49,7 +49,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
         List<Edge<E, V>> outboundEdges = new ArrayList<>();
         for (Edge<E, V> edge : edges.values()) {
 
-            if (((EdgeNode<E, V>) edge).getOutbound() == outbound) {
+            if (((Edge<E, V>) edge).getOutbound() == outbound) {
                 outboundEdges.add(edge);
             }
         }
@@ -63,12 +63,12 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
 //            throw new InvalidEdgeException("There's already an edge with this element.");
         }
 
-        VertexNode<V> outVertex = checkVertex(outbound);
-        VertexNode<V> inVertex = checkVertex(inbound);
+        Vertex<V> outVertex = checkVertex(outbound);
+        Vertex<V> inVertex = checkVertex(inbound);
 
         outVertex.addChild(inVertex);
 
-        EdgeNode<E, V> newEdge = new EdgeNode<>(edgeElement, outVertex, inVertex, arrowTypes);
+        Edge<E, V> newEdge = new Edge<>(edgeElement, outVertex, inVertex, arrowTypes);
 
         edges.put(edgeElement, newEdge);
 
@@ -106,7 +106,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
     @Override
     public synchronized Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         checkVertex(v);
-        EdgeNode<E, V> edge = checkEdge(e);
+        Edge<E, V> edge = checkEdge(e);
 
         if (!edge.contains(v)) {
             return null; /* this edge does not connect vertex v */
@@ -133,7 +133,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexNode<V> newVertex = new VertexNode<>(vElement);
+        Vertex<V> newVertex = new Vertex<>(vElement);
 
         vertices.put(vElement, newVertex);
 
@@ -146,7 +146,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes);
+        Vertex<V> newVertex = new Vertex<>(vElement, elementTypes);
 
         vertices.put(vElement, newVertex);
 
@@ -159,7 +159,7 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, label);
+        Vertex<V> newVertex = new Vertex<>(vElement, elementTypes, label);
 
         vertices.put(vElement, newVertex);
 
@@ -172,17 +172,17 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
-        VertexNode<V> newVertex = new VertexNode<>(vElement, elementTypes, label, notes);
+        Vertex<V> newVertex = new Vertex<>(vElement, elementTypes, label, notes);
 
         vertices.put(vElement, newVertex);
 
         return newVertex;
     }
 
-    private VertexNode<V> vertexOf(V vElement) {
+    private Vertex<V> vertexOf(V vElement) {
         for (Vertex<V> v : vertices.values()) {
-            if (v.element().equals(vElement)) {
-                return (VertexNode<V>) v;
+            if (v.getElement().equals(vElement)) {
+                return (Vertex<V>) v;
             }
         }
         return null;
@@ -220,12 +220,12 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
      * @return
      * @throws InvalidVertexException
      */
-    private VertexNode<V> checkVertex(Vertex<V> v) throws InvalidVertexException {
+    private Vertex<V> checkVertex(Vertex<V> v) throws InvalidVertexException {
         if(v == null) throw new InvalidVertexException("Null vertex.");
 
-        VertexNode<V> vertex;
+        Vertex<V> vertex;
         try {
-            vertex = (VertexNode<V>) v;
+            vertex = (Vertex<V>) v;
         } catch (ClassCastException e) {
             throw new InvalidVertexException("Not a vertex.");
         }
@@ -237,12 +237,12 @@ public class DigraphEdgeList<V, E> implements Digraph<V, E> {
         return vertex;
     }
 
-    private EdgeNode<E, V> checkEdge(Edge<E, V> e) throws InvalidEdgeException {
+    private Edge<E, V> checkEdge(Edge<E, V> e) throws InvalidEdgeException {
         if(e == null) throw new InvalidEdgeException("Null edge.");
 
-        EdgeNode<E, V> edge;
+        Edge<E, V> edge;
         try {
-            edge = (EdgeNode<E, V>) e;
+            edge = (Edge<E, V>) e;
         } catch (ClassCastException ex) {
             throw new InvalidVertexException("Not an adge.");
         }

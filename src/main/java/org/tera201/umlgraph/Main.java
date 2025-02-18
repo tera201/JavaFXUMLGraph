@@ -4,14 +4,13 @@ import org.tera201.umlgraph.containers.GraphDemoContainer;
 import org.tera201.umlgraph.graph.DigraphEdgeList;
 import org.tera201.umlgraph.graphview.GraphPanel;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
-import org.tera201.umlgraph.graphview.strategy.DigraphTreePlacementStrategy;
+import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
 import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 import org.tera201.umlgraph.graph.Vertex;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
 import org.tera201.umlgraph.graph.Digraph;
 
 /**
@@ -25,7 +24,7 @@ public class Main extends Application {
 
         Digraph<String, String> g = build_sample4_digraph();
         System.out.println(g);
-        PlacementStrategy strategy = new DigraphTreePlacementStrategy();
+        PlacementStrategy strategy = new PlacementStrategy();
         GraphPanel<String, String> graphView = new GraphPanel<>(g, null,  strategy, null);
 
         /*

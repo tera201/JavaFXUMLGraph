@@ -42,7 +42,7 @@ public class GraphPanel<V, E> extends Pane {
 
         this.theGraph = theGraph;
         this.graphProperties = properties != null ? properties : new GraphProperties();
-        this.placementStrategy = placementStrategy != null ? placementStrategy : new DigraphTreePlacementStrategy();
+        this.placementStrategy = placementStrategy != null ? placementStrategy : new PlacementStrategy();
         this.edgesWithArrows = this.graphProperties.getUseEdgeArrow();
 
         loadStylesheet(cssFile);
@@ -179,16 +179,11 @@ public class GraphPanel<V, E> extends Pane {
     }
 
     private DefaultArrow createArrow(Edge<E, V> edge) {
-        switch (edge.getArrowsType()) {
-            case INHERITANCE:
-            case REALIZATION:
-                return new TriangleArrow(this.graphProperties.getEdgeArrowSize());
-            case AGGREGATION:
-            case COMPOSITION:
-                return new DiamondArrow(this.graphProperties.getEdgeArrowSize());
-            default:
-                return new SimpleArrow(this.graphProperties.getEdgeArrowSize());
-        }
+        return switch (edge.getArrowsType()) {
+            case INHERITANCE, REALIZATION -> new TriangleArrow(this.graphProperties.getEdgeArrowSize());
+            case AGGREGATION, COMPOSITION -> new DiamondArrow(this.graphProperties.getEdgeArrowSize());
+            default -> new SimpleArrow(this.graphProperties.getEdgeArrowSize());
+        };
     }
 
     private EdgeBase<E, V> createEdge(Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexIn, GraphVertexPaneNode<V> graphVertexOut) {

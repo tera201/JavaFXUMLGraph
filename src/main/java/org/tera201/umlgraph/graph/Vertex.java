@@ -2,41 +2,97 @@ package org.tera201.umlgraph.graph;
 
 import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A vertex contains an element of type <code>V</code> and is used both in
- * graphs and digraphs.
- * 
- * @param <V> Type of value stored in the vertex.
- * 
- * @see Graph
- * @see Digraph
- */
+import static java.lang.Math.max;
 
-public interface Vertex<V> {
-    
-    /**
-     * Returns the element stored in the vertex.
-     * 
-     * @return      stored element
-     */
+public class Vertex<V> {
 
-    public V element();
+    V element;
+    String label;
+    ElementTypes elementTypes;
+    String notes = "";
+    List<Vertex<V>> children;
+    Vertex<V> parent;
+    int depth;
 
-    String getLabel();
+    public Vertex(V element) {
+        this(element, ElementTypes.CLASS);
+    }
 
-    public ElementTypes getType();
+    public Vertex(V element, ElementTypes elementTypes) {
+        this(element, elementTypes, element.toString());
+    }
 
-    public String getNotes();
 
-    public List<Vertex<V>> getChilds();
+    public Vertex(V element, ElementTypes elementTypes, String label) {
+        this.element = element;
+        this.elementTypes = elementTypes;
+        this.label = label;
+        this.children = new ArrayList<>();
+        this.depth = 0;
+    }
 
-    void addChild(Vertex<V> child);
+    public Vertex(V element, ElementTypes elementTypes, String label, String notes) {
+        this(element, elementTypes, label);
+        this.notes = notes;
+    }
 
-    void setParent(Vertex<V> parent);
+    public V getElement() {
+        return this.element;
+    }
 
-    Vertex<V> getParent();
-    void incDepth();
-    public int getDepth();
+    public String getLabel() {
+        return this.label;
+    }
+
+    public ElementTypes getType() {
+        return this.elementTypes;
+    }
+
+    public String getNotes() {
+        return this.notes;
+    }
+
+    public List<Vertex<V>> getChildren() {
+        return children;
+    }
+
+    public void addChild(Vertex<V> child) {
+        if (parent != child && this != child) {
+            this.children.add(child);
+            child.setParent(this);
+            if (depth == 0) {
+                if (this.parent != null) {
+                    this.parent.incDepth();
+                }
+                this.depth = 1;
+            }
+            this.depth = max(depth,1);
+        }
+    }
+
+    public void setParent(Vertex<V> parent) {
+        this.parent = parent;
+    }
+
+    public Vertex<V> getParent() {
+        return this.parent;
+    }
+
+    public String toString() {
+        return "Vertex{" + element + '}';
+    }
+
+    public void incDepth() {
+        this.depth += 1;
+        if (this.parent != null) {
+            this.parent.incDepth();
+        }
+
+    }
+    public int getDepth() {
+        return this.depth;
+    }
 }

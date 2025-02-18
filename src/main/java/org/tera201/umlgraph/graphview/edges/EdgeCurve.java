@@ -46,10 +46,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     /* Styling proxy */
     private final StyleProxy styleProxy;
 
-    public EdgeCurve(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound) {
-        this(edge, inbound, outbound, 0);
-    }
-
     public EdgeCurve(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound, int edgeIndex) {
         this.inbound = inbound;
         this.outbound = outbound;
