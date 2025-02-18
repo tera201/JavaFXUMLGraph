@@ -1,4 +1,4 @@
-package org.tera201.umlgraph.containers;
+package org.tera201.umlgraph.graphview;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -16,13 +16,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.tera201.umlgraph.graphview.GraphPanel;
 
 public class UMLGraphPanel<V,E> extends BorderPane {
     private final GraphPanel<V,E> graph;
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
     private final VBox paneSlider = new VBox(slider, new Text("Zoom"));
+    private final HBox bottomPanel = new HBox(10);
 
     private static final double MIN_SCALE = 0.3;
     private static final double MAX_SCALE = 2;
@@ -30,18 +30,17 @@ public class UMLGraphPanel<V,E> extends BorderPane {
 
     public UMLGraphPanel(GraphPanel<V,E> graph) {
         this.graph = graph;
-        BorderPane centerPanel = new BorderPane();
-        setCenter(centerPanel);
-        centerPanel.setCenter(graph);
+        setCenter(graph);
         setRight(updateSlider());
         Button resetPlaceButton = new Button("Reset places");
         resetPlaceButton.setOnAction(e -> this.graph.resetPlaceStrategy());
         Button resetView = new Button("Reset View");
         resetView.setOnAction(event -> resetView());
 
-        HBox bottomPanel = new HBox(10);
         bottomPanel.getChildren().add(resetPlaceButton);
         bottomPanel.getChildren().add(resetView);
+        setBottom(bottomPanel);
+        enablePanAndZoom();
     }
 
     public void resetView() {
@@ -58,6 +57,7 @@ public class UMLGraphPanel<V,E> extends BorderPane {
             this.getChildren().add(graph);
             this.getChildren().remove(paneSlider);
             this.setRight(paneSlider);
+            this.setBottom(bottomPanel);
         });
     }
 

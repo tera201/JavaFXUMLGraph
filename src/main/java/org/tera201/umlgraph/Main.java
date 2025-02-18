@@ -1,6 +1,6 @@
 package org.tera201.umlgraph;
 
-import org.tera201.umlgraph.containers.GraphDemoContainer;
+import org.tera201.umlgraph.graphview.UMLGraphPanel;
 import org.tera201.umlgraph.graph.DigraphEdgeList;
 import org.tera201.umlgraph.graphview.GraphPanel;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
@@ -32,7 +32,7 @@ public class Main extends Application {
         Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
         */
         //Scene scene = new Scene(graphView, 1024, 768);
-        Scene scene = new Scene(new GraphDemoContainer(graphView), 1024, 768);
+        Scene scene = new Scene(new UMLGraphPanel<>(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX SmartGraph Visualization");
