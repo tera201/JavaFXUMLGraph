@@ -1,7 +1,6 @@
 package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.labels.Label;
 import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.StyleProxy;
 import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
@@ -38,7 +37,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     private final GraphVertex<V> inbound;
     private final GraphVertex<V> outbound;
 
-    private Label attachedLabel = null;
     private DefaultArrow attachedArrow = null;
 
     private double randomAngleFactor = 0;
@@ -156,18 +154,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     }
 
     @Override
-    public void attachLabel(Label label) {
-        this.attachedLabel = label;
-        label.xProperty().bind(controlX1Property().add(controlX2Property()).divide(2).subtract(label.getLayoutBounds().getWidth() / 2));
-        label.yProperty().bind(controlY1Property().add(controlY2Property()).divide(2).add(label.getLayoutBounds().getHeight() / 2));
-    }
-
-    @Override
-    public Label getAttachedLabel() {
-        return attachedLabel;
-    }
-
-    @Override
     public Edge<E, V> getUnderlyingEdge() {
         return underlyingEdge;
     }
@@ -204,10 +190,5 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     @Override
     public StylableNode getStylableArrow() {
         return this.attachedArrow;
-    }
-
-    @Override
-    public StylableNode getStylableLabel() {
-        return this.attachedLabel;
     }
 }

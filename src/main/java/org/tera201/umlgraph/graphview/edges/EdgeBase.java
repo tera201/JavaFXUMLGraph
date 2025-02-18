@@ -3,7 +3,6 @@ package org.tera201.umlgraph.graphview.edges;
 import org.tera201.umlgraph.graph.Edge;
 import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.labels.LabelledNode;
 import org.tera201.umlgraph.graphview.GraphPanel;
 
 /**
@@ -17,12 +16,11 @@ import org.tera201.umlgraph.graphview.GraphPanel;
  * 
  * @see DefaultArrow
  * @see Edge
- * @see LabelledNode
  * @see GraphPanel
  * 
  * @author r.naryshkin99
  */
-public interface EdgeBase<E, V> extends StylableNode, LabelledNode {
+public interface EdgeBase<E, V> extends StylableNode {
 
     /**
      * Returns the underlying (stored reference) graph edge.
@@ -41,13 +39,6 @@ public interface EdgeBase<E, V> extends StylableNode, LabelledNode {
      * @return arrow reference; null if does not exist.
      */
     public StylableNode getStylableArrow();
-
-    /**
-     * Returns the label node for further styling.
-     *
-     * @return the label node.
-     */
-    public StylableNode getStylableLabel();
     
     /**
      * Attaches a {@link DefaultArrow} to this edge, binding its position/rotation.

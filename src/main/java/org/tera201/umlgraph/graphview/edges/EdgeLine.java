@@ -1,7 +1,6 @@
 package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.labels.Label;
 import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.StyleProxy;
 import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
@@ -27,7 +26,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
     private final GraphVertex<V> inbound;
     private final GraphVertex<V> outbound;
     
-    private Label attachedLabel = null;
     private DefaultArrow attachedArrow = null;
     
     /* Styling proxy */
@@ -72,19 +70,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
     public boolean removeStyleClass(String cssClass) {
         return styleProxy.removeStyleClass(cssClass);
     }
-    
-
-    @Override
-    public void attachLabel(Label label) {
-        this.attachedLabel = label;
-        label.xProperty().bind(startXProperty().add(endXProperty()).divide(2).subtract(label.getLayoutBounds().getWidth() / 2));
-        label.yProperty().bind(startYProperty().add(endYProperty()).divide(2).add(label.getLayoutBounds().getHeight() / 1.5));  
-    }
-
-    @Override
-    public Label getAttachedLabel() {
-        return attachedLabel;
-    }
 
     @Override
     public Edge<E, V> getUnderlyingEdge() {
@@ -126,11 +111,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
     @Override
     public StylableNode getStylableArrow() {
         return this.attachedArrow;
-    }
-    
-    @Override
-    public StylableNode getStylableLabel() {
-        return this.attachedLabel;
     }
     
 }

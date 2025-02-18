@@ -28,7 +28,6 @@ public class PlacementStrategy {
                 connectedComponents.add(vertexNodes.get(vertex));
             } else if (vertex.getParent() == null && vertex.getChildren() == null) {
                 aloneComponents.add(vertexNodes.get(vertex));
-                System.out.println(vertexNodes.get(vertex).getAttachedLabel().getText());
             }
         }
 

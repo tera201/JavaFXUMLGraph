@@ -2,10 +2,7 @@ package org.tera201.umlgraph.graphview.vertices;
 
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graphview.GraphPanel;
-import org.tera201.umlgraph.graphview.StylableNode;
 import org.tera201.umlgraph.graphview.StyleProxy;
-import org.tera201.umlgraph.graphview.labels.Label;
-import org.tera201.umlgraph.graphview.labels.LabelledNode;
 import org.tera201.umlgraph.graphview.vertices.elements.Node;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Point2D;
@@ -35,20 +32,13 @@ import java.util.Set;
  *
  * @author r.naryshkin99
  */
-public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, LabelledNode {
+public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T> {
 
     private final Vertex<T> underlyingVertex;
     /* Critical for performance, so we don't rely on the efficiency of the Graph.areAdjacent method */
     private final Set<GraphVertexPaneNode<T>> adjacentVertices;
 
-    private Label attachedLabel = null;
     private boolean isDragging = false;
-
-    /*
-    Automatic layout functionality members
-     */
-    private final PointVector forceVector = new PointVector(0, 0);
-    private final PointVector updatedPosition = new PointVector(0, 0);
 
     /* Styling proxy */
     private StyleProxy styleProxy = null;
@@ -67,7 +57,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
         super();
 
         this.underlyingVertex = v;
-        this.attachedLabel = null;
         this.isDragging = false;
         this.nodeElement = new Node<>(v);
 
@@ -245,18 +234,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
     }
 
     @Override
-    public void attachLabel(Label label) {
-        this.attachedLabel = label;
-        label.xProperty().bind(centerXProperty().subtract(label.getLayoutBounds().getWidth() / 2.0));
-        label.yProperty().bind(centerYProperty().add(getRadius() + label.getLayoutBounds().getHeight()));
-    }
-
-    @Override
-    public Label getAttachedLabel() {
-        return attachedLabel;
-    }
-
-    @Override
     public Vertex<T> getUnderlyingVertex() {
         return underlyingVertex;
     }
@@ -280,25 +257,6 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T>, Labe
     @Override
     public boolean removeStyleClass(String cssClass) {
         return styleProxy.removeStyleClass(cssClass);
-    }
-
-    @Override
-    public StylableNode getStylableLabel() {
-        return this.attachedLabel;
-    }
-
-    /**
-     * Internal representation of a 2D point or vector for quick access to its
-     * attributes.
-     */
-    private class PointVector {
-
-        double x, y;
-
-        public PointVector(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 
     class DragContext {

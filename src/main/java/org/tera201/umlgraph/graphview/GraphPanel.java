@@ -20,7 +20,6 @@ import org.tera201.umlgraph.graph.*;
 import org.tera201.umlgraph.graph.Edge;
 import org.tera201.umlgraph.graphview.arrows.*;
 import org.tera201.umlgraph.graphview.edges.*;
-import org.tera201.umlgraph.graphview.labels.Label;
 import org.tera201.umlgraph.graphview.strategy.*;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
 
@@ -105,7 +104,6 @@ public class GraphPanel<V, E> extends Pane {
         initNodes();
         placeVertices();
         setResizeListener();
-        updateLabels();
     }
 
     public void updateAndWait() {
@@ -215,12 +213,6 @@ public class GraphPanel<V, E> extends Pane {
         if (graphProperties.getUseEdgeTooltip()) {
             Tooltip.install((Node) edge, new Tooltip(labelText));
         }
-        if (graphProperties.getUseEdgeLabel()) {
-            Label label = new Label(labelText);
-            label.addStyleClass("edge-label");
-            this.getChildren().add(label);
-            edge.attachLabel(label);
-        }
     }
 
     private void insertNodes() {
@@ -306,31 +298,6 @@ public class GraphPanel<V, E> extends Pane {
         edgeNodes.clear();
         vertexNodes.clear();
         placedEdges.clear();
-    }
-
-    private void updateLabels() {
-        theGraph.vertices().forEach((v) -> {
-            GraphVertexPaneNode<V> vertexNode = vertexNodes.get(v);
-            if (vertexNode != null) {
-                Label label = vertexNode.getAttachedLabel();
-                if(label != null) {
-                    String text = v.getLabel();
-                    label.setText( text );
-                }
-
-            }
-        });
-
-        theGraph.edges().forEach((e) -> {
-            EdgeBase<E, V> edgeNode = edgeNodes.get(e);
-            if (edgeNode != null) {
-                Label label = edgeNode.getAttachedLabel();
-                if (label != null) {
-                    String text = generateEdgeLabel(e.element());
-                    label.setText( text );
-                }
-            }
-        });
     }
 
     /**

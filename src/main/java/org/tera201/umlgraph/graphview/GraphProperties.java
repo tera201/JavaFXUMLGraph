@@ -1,8 +1,7 @@
 package org.tera201.umlgraph.graphview;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.edges.EdgeBase;;
-import org.tera201.umlgraph.graphview.labels.Label;
+import org.tera201.umlgraph.graphview.edges.EdgeBase;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 
 import java.io.*;
@@ -94,32 +93,12 @@ public class GraphProperties {
     }
     
     /**
-     * Returns a property that indicates whether a vertex has a {@link Label}
-     * attached to it.
-     * 
-     * @return corresponding property value
-     */
-    public boolean getUseVertexLabel() {
-        return getBooleanProperty(PROPERTY_VERTEX_USE_LABEL, DEFAULT_VERTEX_USE_LABEL);
-    }
-    
-    /**
      * Returns a property that indicates whether an edge has a tooltip installed.
      * 
      * @return corresponding property value
      */
     public boolean getUseEdgeTooltip() {
         return getBooleanProperty(PROPERTY_EDGE_USE_TOOLTIP, DEFAULT_EDGE_USE_TOOLTIP);
-    }
-    
-    /**
-     * Returns a property that indicates whether an edge has a {@link Label}
-     * attached to it.
-     * 
-     * @return corresponding property value
-     */
-    public boolean getUseEdgeLabel() {
-        return getBooleanProperty(PROPERTY_EDGE_USE_LABEL, DEFAULT_EDGE_USE_LABEL);
     }
     
     /**
@@ -167,6 +146,5 @@ public class GraphProperties {
     public static void main(String[] args) {
         GraphProperties props = new GraphProperties();
         System.out.println("Prop vertex radius: " + props.getVertexRadius());
-        System.out.println("Prop vertex use label: " + props.getUseVertexLabel());
     }
 }

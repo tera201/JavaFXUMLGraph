@@ -70,11 +70,4 @@ public interface GraphVertex<V> extends StylableNode {
     public double getCenterX();
 
     public double getCenterY();
-
-    /**
-     * Returns the label node for further styling.
-     *
-     * @return the label node.
-     */
-    public StylableNode getStylableLabel();
 }
