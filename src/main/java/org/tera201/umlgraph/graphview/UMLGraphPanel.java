@@ -57,6 +57,7 @@ public class UMLGraphPanel<V,E> extends BorderPane {
             this.getChildren().add(graph);
             this.getChildren().remove(paneSlider);
             this.setRight(paneSlider);
+            this.getChildren().remove(bottomPanel);
             this.setBottom(bottomPanel);
         });
     }
