@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.tera201.umlgraph.graph.Graph;
 import org.tera201.umlgraph.graph.Vertex;
-import org.tera201.umlgraph.graphview.GraphPanel;
+import org.tera201.umlgraph.graphview.UMLGraphPanel;
 import org.tera201.umlgraph.graphview.UMLGraphControlPanel;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
@@ -17,17 +17,17 @@ public class UMLGraphMain extends Application {
     @Override
     public void start(Stage primaryStage) {
         Graph<String, String> graph = GraphSamples.SAMPLE_1.createGraph();
-        GraphPanel<String, String> graphPanel = initializeGraphView(graph);
+        UMLGraphPanel<String, String> graphPanel = initializeGraphView(graph);
         setupStage(graphPanel);
         graphPanel.init();
     }
 
-    private GraphPanel<String, String> initializeGraphView(Graph<String, String> graph) {
+    private UMLGraphPanel<String, String> initializeGraphView(Graph<String, String> graph) {
         PlacementStrategy strategy = new PlacementStrategy();
-        return new GraphPanel<>(graph, null, strategy, null);
+        return new UMLGraphPanel<>(graph, strategy);
     }
 
-    private void setupStage(GraphPanel<String, String> graphView) {
+    private void setupStage(UMLGraphPanel<String, String> graphView) {
         Scene scene = new Scene(new UMLGraphControlPanel<>(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);

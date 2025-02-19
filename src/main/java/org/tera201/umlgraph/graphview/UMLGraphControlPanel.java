@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class UMLGraphControlPanel<V,E> extends BorderPane {
-    private final GraphPanel<V,E> graph;
+    private final UMLGraphPanel<V,E> graph;
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
     private final VBox paneSlider = new VBox(slider, new Text("Zoom"));
@@ -28,7 +28,7 @@ public class UMLGraphControlPanel<V,E> extends BorderPane {
     private static final double MAX_SCALE = 2;
     private static final double SCROLL_DELTA = 0.05;
 
-    public UMLGraphControlPanel(GraphPanel<V,E> graph) {
+    public UMLGraphControlPanel(UMLGraphPanel<V,E> graph) {
         this.graph = graph;
         setCenter(graph);
         setRight(updateSlider());
