@@ -12,9 +12,9 @@ import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
 import org.tera201.umlgraph.graphview.arrows.DiamondArrow;
 import org.tera201.umlgraph.graphview.arrows.SimpleArrow;
 import org.tera201.umlgraph.graphview.arrows.TriangleArrow;
-import org.tera201.umlgraph.graphview.edges.EdgeBase;
 import org.tera201.umlgraph.graphview.edges.EdgeCurve;
 import org.tera201.umlgraph.graphview.edges.EdgeLine;
+import org.tera201.umlgraph.graphview.edges.EdgeLineElement;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
 
@@ -25,7 +25,7 @@ public class UMLGraphPanel<V, E> extends Pane {
     private Graph<V, E> graph;
     private final PlacementStrategy placementStrategy;
     private final Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes = new HashMap<>();
-    private final Map<Edge<E, V>, EdgeBase<E, V>> edgeNodes = new HashMap<>();
+    private final Map<Edge<E, V>, EdgeLineElement<E, V>> edgeNodes = new HashMap<>();
     private final Map<Edge<E, V>, Integer> placedEdges = new HashMap<>();
     private boolean initialized = false;
 
@@ -129,13 +129,13 @@ public class UMLGraphPanel<V, E> extends Pane {
         graphVertexIn.addAdjacentVertex(graphVertexOut);
         graphVertexOut.addAdjacentVertex(graphVertexIn);
 
-        EdgeBase<E, V> graphEdge = createEdge(edge, graphVertexIn, graphVertexOut);
+        EdgeLineElement<E, V> graphEdge = createEdge(edge, graphVertexIn, graphVertexOut);
         addEdge(graphEdge, edge);
         addArrow(edge, graphEdge);
         edgesToPlace.remove(edge);
     }
 
-    private void addArrow(Edge<E, V> edge, EdgeBase<E, V> graphEdge) {
+    private void addArrow(Edge<E, V> edge, EdgeLineElement<E, V> graphEdge) {
         DefaultArrow arrow = createArrow(edge);
         graphEdge.attachArrow(arrow);
         this.getChildren().add(arrow);
@@ -149,9 +149,9 @@ public class UMLGraphPanel<V, E> extends Pane {
         };
     }
 
-    private EdgeBase<E, V> createEdge(Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexIn, GraphVertexPaneNode<V> graphVertexOut) {
+    private EdgeLineElement<E, V> createEdge(Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexIn, GraphVertexPaneNode<V> graphVertexOut) {
         int edgeIndex = placedEdges.getOrDefault(edge, 0);
-        EdgeBase<E, V> graphEdge;
+        EdgeLineElement<E, V> graphEdge;
         if (getTotalEdgesBetween(graphVertexIn.getUnderlyingVertex(), graphVertexOut.getUnderlyingVertex()) > 1
                 || graphVertexIn == graphVertexOut) {
             graphEdge = new EdgeCurve<>(edge, graphVertexIn, graphVertexOut, edgeIndex);
@@ -162,13 +162,13 @@ public class UMLGraphPanel<V, E> extends Pane {
         return graphEdge;
     }
 
-    private void addEdge(EdgeBase<E, V> edge, Edge<E, V> originalEdge) {
+    private void addEdge(EdgeLineElement<E, V> edge, Edge<E, V> originalEdge) {
         this.getChildren().add(0, (Node) edge);
         edgeNodes.put(originalEdge, edge);
         addEdgeLabel(edge, originalEdge);
     }
 
-    private void addEdgeLabel(EdgeBase<E, V> edge, Edge<E, V> originalEdge) {
+    private void addEdgeLabel(EdgeLineElement<E, V> edge, Edge<E, V> originalEdge) {
         Tooltip.install((Node) edge, new Tooltip(originalEdge.element().toString()));
     }
 

@@ -1,9 +1,6 @@
 package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.StylableNode;
-import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
-import org.tera201.umlgraph.graphview.utils.UtilitiesPoint2D;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +24,7 @@ import org.tera201.umlgraph.graph.Edge;
  *
  * @author r.naryshkin99
  */
-public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
+public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V> {
 
     private static final double MAX_EDGE_CURVE_ANGLE = 20;
 
@@ -122,7 +119,7 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
             //decreasing angle with distance
             angle = angle - (distance / 1500 * angle);
 
-            midpoint = UtilitiesPoint2D.rotate(midpoint,
+            midpoint = rotate(midpoint,
                     startpoint,
                     (-angle) + randomAngleFactor * (angle - (-angle)));
 
@@ -170,8 +167,8 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
         Rotate rotation = new Rotate();
         rotation.pivotXProperty().bind(translateXProperty());
         rotation.pivotYProperty().bind(translateYProperty());
-        rotation.angleProperty().bind(UtilitiesBindings.toDegrees(
-                UtilitiesBindings.atan2(endYProperty().subtract(controlY2Property()),
+        rotation.angleProperty().bind(toDegrees(
+                atan2(endYProperty().subtract(controlY2Property()),
                         endXProperty().subtract(controlX2Property()))
         ));
 
@@ -186,9 +183,31 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     public DefaultArrow getAttachedArrow() {
         return this.attachedArrow;
     }
-    
-    @Override
-    public StylableNode getStylableArrow() {
-        return this.attachedArrow;
+
+    /**
+     * Rotate a point around a pivot point by a specific degrees amount
+     * @param point point to rotate
+     * @param pivot pivot point
+     * @param angle_degrees rotation degrees
+     * @return rotated point
+     */
+    public static Point2D rotate(final Point2D point, final Point2D pivot, double angle_degrees) {
+        double angle = Math.toRadians(angle_degrees); //angle_degrees * (Math.PI/180); //to radians
+
+        double sin = Math.sin(angle);
+        double cos = Math.cos(angle);
+
+        //translate to origin
+        Point2D result = point.subtract(pivot);
+
+        // rotate point
+        Point2D rotatedOrigin = new Point2D(
+                result.getX() * cos - result.getY() * sin,
+                result.getX() * sin + result.getY() * cos);
+
+        // translate point back
+        result = rotatedOrigin.add(pivot);
+
+        return result;
     }
 }

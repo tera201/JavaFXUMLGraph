@@ -1,8 +1,6 @@
 package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.StylableNode;
-import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
@@ -18,16 +16,14 @@ import org.tera201.umlgraph.graph.Edge;
  * 
  * @author r.naryshkin99
  */
-public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
-    
+public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
+
     private final Edge<E, V> underlyingEdge;
 
     private final GraphVertex<V> inbound;
     private final GraphVertex<V> outbound;
-    
+
     private DefaultArrow attachedArrow = null;
-    
-    /* Styling proxy */
 
     public EdgeLine(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound) {
         if( inbound == null || outbound == null) {
@@ -46,7 +42,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
             default: addStyleClass("edge");
         }
         
-        //bind start and end positions to vertices centers through properties
         this.startXProperty().bind(outbound.centerXProperty());
         this.startYProperty().bind(outbound.centerYProperty());
         this.endXProperty().bind(inbound.centerXProperty());
@@ -69,6 +64,7 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
         return this.getStyleClass().remove(cssClass);
     }
 
+    @Override
     public void cleanStyleClass() {
         this.getStyleClass().clear();
     }
@@ -77,8 +73,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
     public Edge<E, V> getUnderlyingEdge() {
         return underlyingEdge;
     }
-    
-    
 
     @Override
     public void attachArrow(DefaultArrow arrow) {
@@ -92,8 +86,8 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
         Rotate rotation = new Rotate();
         rotation.pivotXProperty().bind(translateXProperty());
         rotation.pivotYProperty().bind(translateYProperty());
-        rotation.angleProperty().bind( UtilitiesBindings.toDegrees(
-                UtilitiesBindings.atan2( endYProperty().subtract(startYProperty()), 
+        rotation.angleProperty().bind(toDegrees(
+                atan2( endYProperty().subtract(startYProperty()),
                 endXProperty().subtract(startXProperty()))
         ));
         
@@ -107,11 +101,6 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
 
     @Override
     public DefaultArrow getAttachedArrow() {
-        return this.attachedArrow;
-    }
-
-    @Override
-    public StylableNode getStylableArrow() {
         return this.attachedArrow;
     }
     

@@ -1,10 +1,9 @@
 package org.tera201.umlgraph.graphview.arrows;
 
-import org.tera201.umlgraph.graphview.edges.EdgeBase;
 import javafx.scene.shape.Polygon;
 
 /**
- * A shape of an arrow to be attached to a {@link EdgeBase}.
+ * A shape of an arrow to be attached to an Edge.
  * 
  * @author r.naryshkin99
  */
