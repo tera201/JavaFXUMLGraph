@@ -25,10 +25,10 @@ public interface EdgeLineElement<E, V> {
     }
 
     default void setStyleClass(String cssClass) {
-        cleanStyleClass();
+        clearStyleClass();
         addStyleClass(cssClass);
     }
     void addStyleClass(String cssClass);
-    void cleanStyleClass();
+    void clearStyleClass();
     boolean removeStyleClass(String cssClass);
 }

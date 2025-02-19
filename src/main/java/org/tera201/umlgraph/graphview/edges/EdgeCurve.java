@@ -65,12 +65,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V>
     }
 
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass();
-        addStyleClass(cssClass);
-    }
-
-    @Override
     public void addStyleClass(String cssClass) {
         this.getStyleClass().add(cssClass);
     }
@@ -80,7 +74,7 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V>
         return this.getStyleClass().remove(cssClass);
     }
 
-    public void cleanStyleClass() {
+    public void clearStyleClass() {
         this.getStyleClass().clear();
     }
     
