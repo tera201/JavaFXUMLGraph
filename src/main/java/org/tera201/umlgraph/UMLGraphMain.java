@@ -7,7 +7,7 @@ import javafx.stage.StageStyle;
 import org.tera201.umlgraph.graph.Graph;
 import org.tera201.umlgraph.graph.Vertex;
 import org.tera201.umlgraph.graphview.GraphPanel;
-import org.tera201.umlgraph.graphview.UMLGraphPanel;
+import org.tera201.umlgraph.graphview.UMLGraphControlPanel;
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
 import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
@@ -28,7 +28,7 @@ public class UMLGraphMain extends Application {
     }
 
     private void setupStage(GraphPanel<String, String> graphView) {
-        Scene scene = new Scene(new UMLGraphPanel<>(graphView), 1024, 768);
+        Scene scene = new Scene(new UMLGraphControlPanel<>(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX UML Graph");

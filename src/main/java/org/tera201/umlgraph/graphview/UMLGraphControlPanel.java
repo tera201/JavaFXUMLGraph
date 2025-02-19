@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class UMLGraphPanel<V,E> extends BorderPane {
+public class UMLGraphControlPanel<V,E> extends BorderPane {
     private final GraphPanel<V,E> graph;
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
@@ -28,7 +28,7 @@ public class UMLGraphPanel<V,E> extends BorderPane {
     private static final double MAX_SCALE = 2;
     private static final double SCROLL_DELTA = 0.05;
 
-    public UMLGraphPanel(GraphPanel<V,E> graph) {
+    public UMLGraphControlPanel(GraphPanel<V,E> graph) {
         this.graph = graph;
         setCenter(graph);
         setRight(updateSlider());
@@ -135,7 +135,7 @@ public class UMLGraphPanel<V,E> extends BorderPane {
 
         });
 
-        final UMLGraphPanel.DragContext sceneDragContext = new UMLGraphPanel.DragContext();
+        final UMLGraphControlPanel.DragContext sceneDragContext = new UMLGraphControlPanel.DragContext();
 
         setOnMousePressed((MouseEvent event) -> {
 
