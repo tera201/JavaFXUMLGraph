@@ -9,7 +9,7 @@ import javafx.scene.shape.Polygon;
  */
 public class DiamondArrow extends DefaultArrow {
 
-    private Polygon polygon;
+    private final Polygon polygon;
 
     /**
      * Constructor
@@ -25,12 +25,6 @@ public class DiamondArrow extends DefaultArrow {
     }
 
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass();
-        addStyleClass(cssClass);
-    }
-
-    @Override
     public void addStyleClass(String cssClass) {
         polygon.getStyleClass().add(cssClass);
     }
@@ -40,6 +34,7 @@ public class DiamondArrow extends DefaultArrow {
         return polygon.getStyleClass().remove(cssClass);
     }
 
+    @Override
     public void cleanStyleClass() {
         polygon.getStyleClass().clear();
     }

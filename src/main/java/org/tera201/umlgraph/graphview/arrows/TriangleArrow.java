@@ -25,12 +25,6 @@ public class TriangleArrow extends DefaultArrow {
     }
 
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass();
-        addStyleClass(cssClass);
-    }
-
-    @Override
     public void addStyleClass(String cssClass) {
         polygon.getStyleClass().add(cssClass);
     }
@@ -40,6 +34,7 @@ public class TriangleArrow extends DefaultArrow {
         return polygon.getStyleClass().remove(cssClass);
     }
 
+    @Override
     public void cleanStyleClass() {
         polygon.getStyleClass().clear();
     }
