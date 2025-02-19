@@ -50,26 +50,21 @@ public class Packages extends PaneElement {
     public void addTo(Pane pane) {
         pane.getChildren().add(this);
     }
-    @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
-        addStyleClass(cssClass);
-    }
+
     @Override
     public void addStyleClass(String cssClass) {
         this.main.getStyleClass().add(cssClass);
         this.polygon.getStyleClass().add(cssClass);
     }
     @Override
-    public void cleanStyleClass(String cssClass) {
-        this.main.getStyleClass().remove(cssClass);
-        this.polygon.getStyleClass().add(cssClass);
+    public void clearStyleClass() {
+        this.main.getStyleClass().clear();
+        this.polygon.getStyleClass().clear();
     }
     @Override
     public boolean removeStyleClass(String cssClass) {
-        boolean ans = this.main.getStyleClass().remove(cssClass) &&
+        return this.main.getStyleClass().remove(cssClass) &&
                 this.polygon.getStyleClass().remove(cssClass);
-        return ans;
     }
 
 }

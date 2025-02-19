@@ -5,7 +5,9 @@ import javafx.scene.shape.Rectangle;
 
 public class Classes extends PaneElement {
 
-    private Rectangle main, funct, atributes;
+    private Rectangle main;
+    private final Rectangle funct;
+    private Rectangle atributes;
     private double width=11.0, height=12.0;
 
     private static final double aspect_ratio = 11.0 / 12.0;
@@ -48,27 +50,21 @@ public class Classes extends PaneElement {
         pane.getChildren().add(this);
     }
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
-        addStyleClass(cssClass);
-    }
-    @Override
     public void addStyleClass(String cssClass) {
         this.atributes.getStyleClass().add(cssClass);
         this.funct.getStyleClass().add(cssClass);
         this.main.getStyleClass().add(cssClass);
     }
     @Override
-    public void cleanStyleClass(String cssClass) {
+    public void clearStyleClass() {
         this.atributes.getStyleClass().clear();
         this.funct.getStyleClass().clear();
         this.main.getStyleClass().clear();
     }
     @Override
     public boolean removeStyleClass(String cssClass) {
-        boolean ans = this.atributes.getStyleClass().remove(cssClass) &&
+        return this.atributes.getStyleClass().remove(cssClass) &&
                 this.funct.getStyleClass().remove(cssClass) &&
                 this.main.getStyleClass().remove(cssClass);
-        return ans;
     }
 }

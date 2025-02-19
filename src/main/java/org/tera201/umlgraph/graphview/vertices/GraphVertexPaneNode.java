@@ -1,8 +1,6 @@
 package org.tera201.umlgraph.graphview.vertices;
 
 import org.tera201.umlgraph.graph.Vertex;
-import org.tera201.umlgraph.graphview.GraphPanel;
-import org.tera201.umlgraph.graphview.StyleProxy;
 import org.tera201.umlgraph.graphview.vertices.elements.Node;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Point2D;
@@ -40,20 +38,14 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T> {
 
     private boolean isDragging = false;
 
-    /* Styling proxy */
-    private StyleProxy styleProxy = null;
     private Node nodeElement;
 
     /**
      * Constructor which sets the instance attributes.
      *
      * @param v the underlying vertex
-     * @param x initial x position on the parent pane
-     * @param y initial y position on the parent pane
-     * @param radius radius of this vertex representation, i.e., a circle
-     * @param allowMove should the vertex be draggable with the mouse
      */
-    public GraphVertexPaneNode(Vertex<T> v, double x, double y, double radius, boolean allowMove) {
+    public GraphVertexPaneNode(Vertex<T> v) {
         super();
 
         this.underlyingVertex = v;
@@ -65,11 +57,7 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T> {
 
         this.adjacentVertices = new HashSet<>();
 
-        styleProxy = new StyleProxy(this);
-
-        if (allowMove) {
-            enableDrag();
-        }
+        enableDrag();
     }
     
     /**
@@ -243,20 +231,19 @@ public class GraphVertexPaneNode<T> extends Pane implements GraphVertex<T> {
         return this.getHeight();
     }
 
-
     @Override
-    public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
+    public void addStyleClass(String cssClass) {
+        this.getStyleClass().add(cssClass);
     }
 
     @Override
-    public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+    public void clearStyleClass() {
+        this.getStyleClass().clear();
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return this.getStyleClass().remove(cssClass);
     }
 
     class DragContext {

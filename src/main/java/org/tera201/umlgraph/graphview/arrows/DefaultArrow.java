@@ -9,7 +9,7 @@ import javafx.scene.layout.Pane;
  */
 public abstract class DefaultArrow extends Pane {
     public void setStyleClass(String cssClass) {
-        cleanStyleClass();
+        clearStyleClass();
         addStyleClass(cssClass);
     }
     public void addStyleClass(String cssClass) {
@@ -18,7 +18,7 @@ public abstract class DefaultArrow extends Pane {
     public boolean removeStyleClass(String cssClass) {
         return this.getStyleClass().remove(cssClass);
     }
-    public void cleanStyleClass() {
+    public void clearStyleClass() {
         this.getStyleClass().clear();
     }
 }

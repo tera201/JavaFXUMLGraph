@@ -5,7 +5,7 @@ import javafx.scene.shape.Circle;
 
 public class Interfaces extends PaneElement {
 
-    private Circle main;
+    private final Circle main;
     private double width = 10.0, height = 10.0;
     private static final double aspect_ratio = 1.;
 
@@ -42,22 +42,16 @@ public class Interfaces extends PaneElement {
         pane.getChildren().add(this);
     }
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
-        addStyleClass(cssClass);
-    }
-    @Override
     public void addStyleClass(String cssClass) {
         this.main.getStyleClass().add(cssClass);
     }
     @Override
-    public void cleanStyleClass(String cssClass) {
+    public void clearStyleClass() {
         this.main.getStyleClass().clear();
     }
     @Override
     public boolean removeStyleClass(String cssClass) {
-        boolean ans = this.main.getStyleClass().remove(cssClass);
-        return ans;
+        return this.main.getStyleClass().remove(cssClass);
     }
 
 }

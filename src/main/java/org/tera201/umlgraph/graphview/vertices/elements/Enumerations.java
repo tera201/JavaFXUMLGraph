@@ -5,7 +5,8 @@ import javafx.scene.shape.Rectangle;
 
 public class Enumerations extends PaneElement {
 
-    private Rectangle main, enumLine;
+    private final Rectangle main;
+    private final Rectangle enumLine;
     private double width=11.0, height=12.0;
 
     private static final double aspect_ratio = 11.0 / 12.0;
@@ -45,25 +46,19 @@ public class Enumerations extends PaneElement {
         pane.getChildren().add(this);
     }
     @Override
-    public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
-        addStyleClass(cssClass);
-    }
-    @Override
     public void addStyleClass(String cssClass) {
         this.main.getStyleClass().add(cssClass);
         this.enumLine.getStyleClass().add(cssClass);
     }
     @Override
-    public void cleanStyleClass(String cssClass) {
+    public void clearStyleClass() {
         this.main.getStyleClass().clear();
         this.enumLine.getStyleClass().clear();
     }
     @Override
     public boolean removeStyleClass(String cssClass) {
-        boolean ans = this.main.getStyleClass().remove(cssClass) &&
+        return this.main.getStyleClass().remove(cssClass) &&
                 this.enumLine.getStyleClass().remove(cssClass);
-        return ans;
     }
 
 }

@@ -5,13 +5,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-public class Node<T> implements Element {
+public class Node<T> {
 
     private Rectangle main;
 
-    private PaneElement paneElement;
+    private final PaneElement paneElement;
 
-    private Label label;
+    private final Label label;
 
     private ElementTypes elementTypes = ElementTypes.CLASS;
 
@@ -92,35 +92,28 @@ public class Node<T> implements Element {
         return paneElement;
     }
 
-    @Override
     public double getWidth() {
         return this.main.getWidth();
     }
 
-    @Override
     public double getHeight() {
         return this.main.getHeight();
     }
-    @Override
     public void addTo(Pane pane) {
         pane.getChildren().addAll(main, label, paneElement);
     }
-    @Override
     public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
+        clearStyleClass();
         addStyleClass(cssClass);
         this.paneElement.setStyleClass(cssClass);
     }
-    @Override
     public void addStyleClass(String cssClass) {
         this.main.getStyleClass().add(cssClass);
         this.paneElement.addStyleClass(cssClass);
     }
-    @Override
-    public void cleanStyleClass(String cssClass) {
+    public void clearStyleClass() {
         this.main.getStyleClass().clear();
     }
-    @Override
     public boolean removeStyleClass(String cssClass) {
         return this.main.getStyleClass().remove(cssClass) &&
                 this.paneElement.removeStyleClass(cssClass);

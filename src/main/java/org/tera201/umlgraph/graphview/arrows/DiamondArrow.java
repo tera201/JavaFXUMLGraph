@@ -35,7 +35,7 @@ public class DiamondArrow extends DefaultArrow {
     }
 
     @Override
-    public void cleanStyleClass() {
+    public void clearStyleClass() {
         polygon.getStyleClass().clear();
     }
     
