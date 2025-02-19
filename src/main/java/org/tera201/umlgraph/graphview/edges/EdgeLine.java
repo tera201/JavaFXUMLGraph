@@ -2,7 +2,6 @@ package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
 import org.tera201.umlgraph.graphview.StylableNode;
-import org.tera201.umlgraph.graphview.StyleProxy;
 import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
 import javafx.scene.shape.Line;
@@ -29,8 +28,7 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
     private DefaultArrow attachedArrow = null;
     
     /* Styling proxy */
-    private final StyleProxy styleProxy;
-    
+
     public EdgeLine(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound) {
         if( inbound == null || outbound == null) {
             throw new IllegalArgumentException("Cannot connect null vertices.");
@@ -41,12 +39,11 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
         
         this.underlyingEdge = edge;
         
-        styleProxy = new StyleProxy(this);
         switch (edge.getArrowsType()) {
             case DEPENDENCY, REALIZATION:
-                styleProxy.addStyleClass("edge-dash");
+                addStyleClass("edge-dash");
                 break;
-            default: styleProxy.addStyleClass("edge");
+            default: addStyleClass("edge");
         }
         
         //bind start and end positions to vertices centers through properties
@@ -55,20 +52,25 @@ public class EdgeLine<E, V> extends Line implements EdgeBase<E, V> {
         this.endXProperty().bind(inbound.centerXProperty());
         this.endYProperty().bind(inbound.centerYProperty());
     }
-    
+
     @Override
     public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
+        cleanStyleClass();
+        addStyleClass(cssClass);
     }
 
     @Override
     public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+        this.getStyleClass().add(cssClass);
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return this.getStyleClass().remove(cssClass);
+    }
+
+    public void cleanStyleClass() {
+        this.getStyleClass().clear();
     }
 
     @Override

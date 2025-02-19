@@ -2,7 +2,6 @@ package org.tera201.umlgraph.graphview.edges;
 
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
 import org.tera201.umlgraph.graphview.StylableNode;
-import org.tera201.umlgraph.graphview.StyleProxy;
 import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
 import org.tera201.umlgraph.graphview.utils.UtilitiesPoint2D;
 import org.tera201.umlgraph.graphview.vertices.GraphVertex;
@@ -40,9 +39,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     private DefaultArrow attachedArrow = null;
 
     private double randomAngleFactor = 0;
-    
-    /* Styling proxy */
-    private final StyleProxy styleProxy;
 
     public EdgeCurve(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound, int edgeIndex) {
         this.inbound = inbound;
@@ -50,12 +46,11 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
 
         this.underlyingEdge = edge;
 
-        styleProxy = new StyleProxy(this);
         switch (edge.getArrowsType()) {
             case DEPENDENCY, REALIZATION:
-                styleProxy.addStyleClass("edge-dash");
+                addStyleClass("edge-dash");
                 break;
-            default: styleProxy.addStyleClass("edge");
+            default: addStyleClass("edge");
         }
 
 
@@ -74,17 +69,22 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
 
     @Override
     public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
+        cleanStyleClass();
+        addStyleClass(cssClass);
     }
 
     @Override
     public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+        this.getStyleClass().add(cssClass);
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return this.getStyleClass().remove(cssClass);
+    }
+
+    public void cleanStyleClass() {
+        this.getStyleClass().clear();
     }
     
     private void update() {                

@@ -1,7 +1,6 @@
 package org.tera201.umlgraph.graphview.arrows;
 
 import org.tera201.umlgraph.graphview.edges.EdgeBase;
-import org.tera201.umlgraph.graphview.StyleProxy;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -11,8 +10,6 @@ import javafx.scene.shape.Polygon;
  */
 public class DiamondArrow extends DefaultArrow {
 
-    /* Styling proxy */
-    private final StyleProxy styleProxy;
     private Polygon polygon;
 
     /**
@@ -22,30 +19,30 @@ public class DiamondArrow extends DefaultArrow {
      */
     public DiamondArrow(double size) {
         super();
-        
-        /* Create this arrow shape */
         this.polygon = new Polygon(0, 0, - 2 * size, size, -4 * size, 0, -2 * size, -size);
         this.setHeight(size * 4);
         this.getChildren().add(this.polygon);
-
-        /* Add the corresponding css class */
-        styleProxy = new StyleProxy(polygon);
-        styleProxy.addStyleClass("arrow-black");
+        addStyleClass("arrow-black");
     }
 
     @Override
     public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
+        cleanStyleClass();
+        addStyleClass(cssClass);
     }
 
     @Override
     public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+        polygon.getStyleClass().add(cssClass);
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return polygon.getStyleClass().remove(cssClass);
+    }
+
+    public void cleanStyleClass() {
+        polygon.getStyleClass().clear();
     }
     
 }

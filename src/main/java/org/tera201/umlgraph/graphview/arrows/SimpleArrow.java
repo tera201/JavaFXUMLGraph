@@ -1,7 +1,6 @@
 package org.tera201.umlgraph.graphview.arrows;
 
 import org.tera201.umlgraph.graphview.edges.EdgeBase;
-import org.tera201.umlgraph.graphview.StyleProxy;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -13,8 +12,6 @@ import javafx.scene.shape.Path;
  */
 public class SimpleArrow extends DefaultArrow {
 
-    /* Styling proxy */
-    private final StyleProxy styleProxy;
     private Path path;
 
     /**
@@ -24,34 +21,33 @@ public class SimpleArrow extends DefaultArrow {
      */
     public SimpleArrow(double size) {
         super();
-        
-        /* Create this arrow shape */
         this.path = new Path();
         this.path.getElements().add(new MoveTo(0, 0));
         this.path.getElements().add(new LineTo(-2 * size, size));
         this.path.getElements().add(new MoveTo(0, 0));
         this.path.getElements().add(new LineTo(-2 * size, -size));
-
         this.getChildren().add(this.path);
-        
-        /* Add the corresponding css class */
-        styleProxy = new StyleProxy(this);
-        styleProxy.addStyleClass("arrow");      
+        addStyleClass("arrow");
     }
 
     @Override
     public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
+        cleanStyleClass();
+        addStyleClass(cssClass);
     }
 
     @Override
     public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+        this.getStyleClass().add(cssClass);
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return this.getStyleClass().remove(cssClass);
+    }
+
+    public void cleanStyleClass() {
+        this.getStyleClass().clear();
     }
     
 }
