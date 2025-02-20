@@ -18,14 +18,18 @@ public class Graph<V, E> {
         this.edges = new HashMap<>();
     }
 
-    public Collection<Edge<E, V>> GetIncidentEdges(Vertex<V> inbound) throws GraphException {
+    public Collection<Edge<E, V>> getIncidentEdges(Vertex<V> inbound) throws GraphException {
         checkVertex(inbound);
         return edges.values().stream().filter((edge) -> (edge.getInbound() == inbound)).toList();
     }
 
-    public Collection<Edge<E, V>> GetOutboundEdges(Vertex<V> outbound) throws GraphException {
+    public Collection<Edge<E, V>> getOutboundEdges(Vertex<V> outbound) throws GraphException {
         checkVertex(outbound);
         return edges.values().stream().filter((edge) -> (edge.getOutbound() == outbound)).toList();
+    }
+
+    public Edge<E, V> getOrCreateEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement) throws GraphException {
+        return getOrCreateEdge(outbound, inbound, edgeElement, null);
     }
 
     public Edge<E, V> getOrCreateEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement, ArrowTypes arrowTypes) throws GraphException {

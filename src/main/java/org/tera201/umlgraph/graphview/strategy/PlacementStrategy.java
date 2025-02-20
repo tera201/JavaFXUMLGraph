@@ -10,7 +10,7 @@ public class PlacementStrategy {
 
     private double xSpacing = 100;
     private double ySpacing = 100;
-    private Set<UMLVertexNode> visited = new HashSet<>();
+    private final Set<UMLVertexNode> visited = new HashSet<>();
     Set<UMLVertexNode> visitedBalanced = new HashSet<>();
     Set<UMLVertexNode> visitedWidth = new HashSet<>();
 
@@ -34,52 +34,52 @@ public class PlacementStrategy {
         double yOffset = 0;
         final int[] yOffset2 = {0};
         final int[] xOffset2 = {10};
-        connectedComponents.forEach(it -> neighborsMap.put(it, neighbors(it, graph, vertexNodes)));
+        connectedComponents.forEach(it -> neighborsMap.put(it, neighbors(it, vertexNodes)));
         neighborsMap.entrySet().stream().filter(it -> it.getValue().isEmpty()).forEach(it -> {
-            placeAloneVertex(it.getKey(), graph, xOffset2[0], yOffset2[0], vertexNodes);
+            placeAloneVertex(it.getKey(), xOffset2[0], yOffset2[0]);
             xOffset2[0] = (xOffset2[0] + it.getKey().getWidth() + 10) < width * 1.2 ? (int) (xOffset2[0] + it.getKey().getWidth() + 10) : 10;
             yOffset2[0] += xOffset2[0] == 10? 50 : 0;
         });
 
         for (UMLVertexNode<V> node : aloneComponents) {
-            placeAloneVertex(node, graph, width / 2 + xOffset, yOffset2[0], vertexNodes);
+            placeAloneVertex(node, width / 2 + xOffset, yOffset2[0]);
 //            yOffset[0] += 50;
         }
         yOffset2[0] += 50;
 
         neighborsMap.entrySet().stream().filter(it -> !it.getValue().isEmpty()).forEach(it -> {
-            placeTree(it.getKey(), graph, width / 2 + xOffset, yOffset2[0], vertexNodes);
+            placeTree(it.getKey(), width / 2 + xOffset, yOffset2[0], vertexNodes);
             yOffset2[0] += 200 * it.getKey().getUnderlyingVertex().getDepth();
         });
     }
 
-    private <V, E> void placeAloneVertex(UMLVertexNode<V> root, Graph<V, E> graph, double x, double y, Map<Vertex<V>, UMLVertexNode<V>> vertexNodes) {
+    private <V> void placeAloneVertex(UMLVertexNode<V> root, double x, double y) {
         visited.add(root);
         root.setPosition(x, y);
     }
 
 
-    private <V, E> void placeTree(UMLVertexNode<V> root, Graph<V, E> graph, double x, double y, Map<Vertex<V>, UMLVertexNode<V>> vertexNodes) {
+    private <V> void placeTree(UMLVertexNode<V> root, double x, double y, Map<Vertex<V>, UMLVertexNode<V>> vertexNodes) {
         if (visited.contains(root)) {
             return;
         }
         visited.add(root);
         root.setPosition(x, y);
 
-        Collection<UMLVertexNode<V>> neighbors = neighbors(root, graph, vertexNodes);
+        Collection<UMLVertexNode<V>> neighbors = neighbors(root, vertexNodes);
 
         int numChildren = neighbors.size();
         int yVarSpacing = 1;
         double xOffset = -((numChildren - 1) * xSpacing) / 2;
 
         for (UMLVertexNode<V> neighbor : neighbors) {
-            placeTree(neighbor, graph, x + xOffset, y + ySpacing + ySpacing * yVarSpacing * 0.4, vertexNodes);
+            placeTree(neighbor, x + xOffset, y + ySpacing + ySpacing * yVarSpacing * 0.4, vertexNodes);
             xOffset += xSpacing;
             yVarSpacing = (yVarSpacing + 1) % 3;
         }
     }
 
-    private <V, E> Collection<UMLVertexNode<V>> neighbors(UMLVertexNode<V> graphVertex, Graph<V, E> graph, Map<Vertex<V>, UMLVertexNode<V>> vertexNodes) {
+    private <V> Collection<UMLVertexNode<V>> neighbors(UMLVertexNode<V> graphVertex, Map<Vertex<V>, UMLVertexNode<V>> vertexNodes) {
         List<? extends Vertex<?>> vertexTreeList;
         Collection<UMLVertexNode<V>> neighbors = new ArrayList<>();
         vertexTreeList = ((Vertex<?>) graphVertex.getUnderlyingVertex()).getChildren();

@@ -4,6 +4,7 @@ import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Math.max;
 
@@ -18,7 +19,7 @@ public class Vertex<V> {
     int depth;
 
     public Vertex(V element) {
-        this(element, ElementTypes.CLASS);
+        this(element, null);
     }
 
     public Vertex(V element, ElementTypes elementTypes) {
@@ -27,15 +28,15 @@ public class Vertex<V> {
 
 
     public Vertex(V element, ElementTypes elementTypes, String label) {
-        this.element = element;
-        this.elementTypes = elementTypes;
-        this.label = label;
-        this.children = new ArrayList<>();
-        this.depth = 0;
+        this(element, elementTypes, label, "");
     }
 
     public Vertex(V element, ElementTypes elementTypes, String label, String notes) {
-        this(element, elementTypes, label);
+        this.element = element;
+        this.elementTypes = Objects.requireNonNullElse(elementTypes, ElementTypes.CLASS);
+        this.label = label;
+        this.children = new ArrayList<>();
+        this.depth = 0;
         this.notes = notes;
     }
 

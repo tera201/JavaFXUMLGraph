@@ -1,6 +1,9 @@
 package org.tera201.umlgraph.graph;
 
 import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
+import org.tera201.umlgraph.graphview.vertices.elements.ElementTypes;
+
+import java.util.Objects;
 
 public class Edge<E, V> {
 
@@ -14,7 +17,7 @@ public class Edge<E, V> {
         this.element = element;
         this.vertexOutbound = vertexOutbound;
         this.vertexInbound = vertexInbound;
-        this.arrowType = arrType;
+        this.arrowType = Objects.requireNonNullElse(arrType, ArrowTypes.AGGREGATION);;
     }
 
     public E element() {
