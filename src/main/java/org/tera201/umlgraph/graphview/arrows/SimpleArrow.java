@@ -28,5 +28,20 @@ public class SimpleArrow extends DefaultArrow {
         this.getChildren().add(this.path);
         addStyleClass("arrow");
     }
+
+    @Override
+    public void addStyleClass(String cssClass) {
+        path.getStyleClass().add(cssClass);
+    }
+
+    @Override
+    public boolean removeStyleClass(String cssClass) {
+        return path.getStyleClass().remove(cssClass);
+    }
+
+    @Override
+    public void clearStyleClass() {
+        path.getStyleClass().clear();
+    }
     
 }

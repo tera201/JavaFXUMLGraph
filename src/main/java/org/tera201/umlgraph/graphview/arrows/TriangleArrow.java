@@ -21,7 +21,7 @@ public class TriangleArrow extends DefaultArrow {
         this.polygon = new Polygon(0, 0, - 2 * size, size, -2 * size, -size);
         this.setHeight(size * 4);
         this.getChildren().add(this.polygon);
-        addStyleClass("arrow-black");
+        addStyleClass("arrow-white");
     }
 
     @Override

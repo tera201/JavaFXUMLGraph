@@ -71,3 +71,22 @@
 .node-label {
     -fx-font: normal 15pt "Arial";
 }
+
+.arrow {
+    -fx-stroke-width: 2;
+    -fx-stroke: #000000;
+    -fx-opacity: 0.8;
+}
+
+.arrow-black {
+    -fx-stroke-width: 2;
+    -fx-stroke: #000000;
+    -fx-fill: #000000;
+    -fx-opacity: 0.8;
+}
+
+.arrow-white {
+    -fx-stroke-width: 1;
+    -fx-stroke: #000000;
+    -fx-fill: #FFFFFF;
+}

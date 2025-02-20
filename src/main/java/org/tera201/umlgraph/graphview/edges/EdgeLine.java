@@ -4,6 +4,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
 import org.tera201.umlgraph.graph.Edge;
+import org.tera201.umlgraph.graphview.arrows.ArrowTypes;
 import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
 import org.tera201.umlgraph.graphview.vertices.UMLVertexNode;
 
@@ -63,6 +64,7 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
     @Override
     public void attachArrow(DefaultArrow arrow) {
         this.attachedArrow = arrow;
+        if (underlyingEdge.getArrowsType() == ArrowTypes.COMPOSITION) attachedArrow.setStyleClass("arrow-white");
 
         DoubleBinding angle = atan2( endYProperty().subtract(startYProperty()),
                 endXProperty().subtract(startXProperty()));
