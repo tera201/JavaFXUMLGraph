@@ -5,7 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import org.tera201.umlgraph.graph.Vertex;
-import org.tera201.umlgraph.graphview.vertices.elements.Node;
+import org.tera201.umlgraph.graphview.vertices.elements.Element;
 
 public class UMLVertexNode<T> extends Pane {
 
@@ -13,13 +13,13 @@ public class UMLVertexNode<T> extends Pane {
 
     private boolean isDragging = false;
 
-    private Node nodeElement;
+    private Element element;
 
     public UMLVertexNode(Vertex<T> v) {
         super();
         this.underlyingVertex = v;
-        this.nodeElement = new Node<>(v);
-        nodeElement.addTo(this);
+        this.element = new Element<>(v);
+        element.addTo(this);
         enableDrag();
     }
 

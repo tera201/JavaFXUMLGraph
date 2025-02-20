@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-public class Node<T> {
+public class Element<T> {
 
     private Rectangle main;
 
@@ -15,7 +15,7 @@ public class Node<T> {
 
     private ElementTypes elementTypes = ElementTypes.CLASS;
 
-    public Node(Vertex<T> v) {
+    public Element(Vertex<T> v) {
         this.label = new Label(v.getLabel());
         this.elementTypes = v.getType();
         switch (elementTypes) {
@@ -36,12 +36,12 @@ public class Node<T> {
         init();
     }
 
-    public Node(String name, Vertex<T> v) {
+    public Element(String name, Vertex<T> v) {
         this(v);
         this.label.setText(name);
     }
 
-    public Node(String name, PaneElement paneElement) {
+    public Element(String name, PaneElement paneElement) {
         this.label = new Label(name);
         this.paneElement = paneElement;
         init();
