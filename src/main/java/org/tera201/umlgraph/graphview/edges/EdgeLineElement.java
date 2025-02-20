@@ -19,6 +19,22 @@ public interface EdgeLineElement<E, V> {
         return createDoubleBinding(() -> Math.atan2(y.get(), x.get()), y, x);
     }
 
+    default DoubleBinding sin(final ObservableDoubleValue a) {
+        return createDoubleBinding(() -> Math.sin(a.get()), a);
+    }
+
+    default DoubleBinding cos(final ObservableDoubleValue a) {
+        return createDoubleBinding(() -> Math.cos(a.get()), a);
+    }
+
+    default DoubleBinding abs(final ObservableDoubleValue a) {
+        return createDoubleBinding(() -> Math.abs(a.get()), a);
+    }
+
+    default DoubleBinding min(final ObservableDoubleValue y, final ObservableDoubleValue x) {
+        return createDoubleBinding(() -> Math.min(y.get(), x.get()), y, x);
+    }
+
 
     default DoubleBinding toDegrees(final ObservableDoubleValue angrad) {
         return createDoubleBinding(() -> Math.toDegrees(angrad.get()), angrad);

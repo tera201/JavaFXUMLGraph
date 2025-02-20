@@ -3,18 +3,11 @@ package org.tera201.umlgraph.graphview.edges;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import org.tera201.umlgraph.graph.Edge;
+import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
+import org.tera201.umlgraph.graphview.vertices.UMLVertexNode;
 
 
-/**
- * Implementation of a straight line edge.
- * 
- * @param <E> Type stored in the underlying edge
- * @param <V> Type of connecting vertex
- * 
- * @author r.naryshkin99
- */
 public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
 
     private final Edge<E, V> underlyingEdge;
@@ -40,7 +33,7 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
                 break;
             default: addStyleClass("edge");
         }
-        
+
         this.startXProperty().bind(outbound.centerXProperty());
         this.startYProperty().bind(outbound.centerYProperty());
         this.endXProperty().bind(inbound.centerXProperty());
@@ -70,20 +63,21 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
     @Override
     public void attachArrow(DefaultArrow arrow) {
         this.attachedArrow = arrow;
-        
-        /* attach arrow to line's endpoint */
-        arrow.translateXProperty().bind(endXProperty());
-        arrow.translateYProperty().bind(endYProperty());
-        
+
+        DoubleBinding angle = atan2( endYProperty().subtract(startYProperty()),
+                endXProperty().subtract(startXProperty()));
+        DoubleBinding dx = inbound.widthProperty().divide(2).divide(abs(cos(angle)));
+        DoubleBinding dy = inbound.heightProperty().divide(2).divide(abs(sin(angle)));
+        DoubleBinding t = min(dx, dy);
+        arrow.translateXProperty().bind(inbound.centerXProperty().subtract(t.multiply(cos(angle))));
+        arrow.translateYProperty().bind(inbound.centerYProperty().subtract(t.multiply(sin(angle))));
+
         /* rotate arrow around itself based on this line's angle */
         Rotate rotation = new Rotate();
         rotation.pivotXProperty().bind(translateXProperty());
         rotation.pivotYProperty().bind(translateYProperty());
-        rotation.angleProperty().bind(toDegrees(
-                atan2( endYProperty().subtract(startYProperty()),
-                endXProperty().subtract(startXProperty()))
-        ));
-        
+        rotation.angleProperty().bind(toDegrees(angle));
+
         arrow.getTransforms().add(rotation);
 
     }
@@ -92,5 +86,4 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
     public DefaultArrow getAttachedArrow() {
         return this.attachedArrow;
     }
-    
 }

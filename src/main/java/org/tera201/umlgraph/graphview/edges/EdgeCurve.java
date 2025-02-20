@@ -132,18 +132,20 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V>
     public void attachArrow(DefaultArrow arrow) {
         this.attachedArrow = arrow;
 
-        /* attach arrow to line's endpoint */
-        arrow.translateXProperty().bind(endXProperty());
-        arrow.translateYProperty().bind(endYProperty());
+        DoubleBinding angle = atan2(endYProperty().subtract(controlY2Property()),
+                endXProperty().subtract(controlX2Property()));
+        DoubleBinding dx = inbound.widthProperty().divide(2).divide(abs(cos(angle)));
+        DoubleBinding dy = inbound.heightProperty().divide(2).divide(abs(sin(angle)));
+        DoubleBinding t = min(dx, dy);
+        arrow.translateXProperty().bind(inbound.centerXProperty().subtract(t.multiply(cos(angle))));
+        arrow.translateYProperty().bind(inbound.centerYProperty().subtract(t.multiply(sin(angle))));
+
 
         /* rotate arrow around itself based on this line's angle */
         Rotate rotation = new Rotate();
         rotation.pivotXProperty().bind(translateXProperty());
         rotation.pivotYProperty().bind(translateYProperty());
-        rotation.angleProperty().bind(toDegrees(
-                atan2(endYProperty().subtract(controlY2Property()),
-                        endXProperty().subtract(controlX2Property()))
-        ));
+        rotation.angleProperty().bind(toDegrees(angle));
 
         arrow.getTransforms().add(rotation);
     }
@@ -152,7 +154,7 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V>
     public DefaultArrow getAttachedArrow() {
         return this.attachedArrow;
     }
-    
+
     public static Point2D rotate(final Point2D point, final Point2D pivot, double angle_degrees) {
         double angle = Math.toRadians(angle_degrees); //angle_degrees * (Math.PI/180); //to radians
 
