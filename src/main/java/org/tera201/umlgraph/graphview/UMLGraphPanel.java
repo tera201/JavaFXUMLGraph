@@ -16,7 +16,7 @@ import org.tera201.umlgraph.graphview.edges.EdgeCurve;
 import org.tera201.umlgraph.graphview.edges.EdgeLine;
 import org.tera201.umlgraph.graphview.edges.EdgeLineElement;
 import org.tera201.umlgraph.graphview.strategy.PlacementStrategy;
-import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
+import org.tera201.umlgraph.graphview.vertices.UMLVertexNode;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class UMLGraphPanel<V, E> extends Pane {
 
     private Graph<V, E> graph;
     private final PlacementStrategy placementStrategy;
-    private final Map<Vertex<V>, GraphVertexPaneNode<V>> vertexNodes = new HashMap<>();
+    private final Map<Vertex<V>, UMLVertexNode<V>> vertexNodes = new HashMap<>();
     private final Map<Edge<E, V>, EdgeLineElement<E, V>> edgeNodes = new HashMap<>();
     private final Map<Edge<E, V>, Integer> placedEdges = new HashMap<>();
     private boolean initialized = false;
@@ -63,7 +63,7 @@ public class UMLGraphPanel<V, E> extends Pane {
 
     private void placeVertices() {
         placementStrategy.place(this.widthProperty().doubleValue(), this.heightProperty().doubleValue(), graph, vertexNodes);
-        for (GraphVertexPaneNode<V> vertexNode : vertexNodes.values()) {
+        for (UMLVertexNode<V> vertexNode : vertexNodes.values()) {
             if (!this.getChildren().contains(vertexNode)) {
                 this.getChildren().add(vertexNode);
             }
@@ -108,7 +108,7 @@ public class UMLGraphPanel<V, E> extends Pane {
 
     private void initNodes() {
         for (Vertex<V> vertex : graph.getVertices()) {
-            GraphVertexPaneNode<V> vertexNode = new GraphVertexPaneNode<>(vertex);
+            UMLVertexNode<V> vertexNode = new UMLVertexNode<>(vertex);
             vertexNodes.put(vertex, vertexNode);
         }
         placeEdges();
@@ -123,11 +123,8 @@ public class UMLGraphPanel<V, E> extends Pane {
 
     private void placeEdge(Edge<E, V> edge, Vertex<V> vertex, List<Edge<E, V>> edgesToPlace) {
         Vertex<V> oppositeVertex = graph.opposite(vertex, edge);
-        GraphVertexPaneNode<V> graphVertexIn = vertexNodes.get(vertex);
-        GraphVertexPaneNode<V> graphVertexOut = vertexNodes.get(oppositeVertex);
-
-        graphVertexIn.addAdjacentVertex(graphVertexOut);
-        graphVertexOut.addAdjacentVertex(graphVertexIn);
+        UMLVertexNode<V> graphVertexIn = vertexNodes.get(vertex);
+        UMLVertexNode<V> graphVertexOut = vertexNodes.get(oppositeVertex);
 
         EdgeLineElement<E, V> graphEdge = createEdge(edge, graphVertexIn, graphVertexOut);
         addEdge(graphEdge, edge);
@@ -149,7 +146,7 @@ public class UMLGraphPanel<V, E> extends Pane {
         };
     }
 
-    private EdgeLineElement<E, V> createEdge(Edge<E, V> edge, GraphVertexPaneNode<V> graphVertexIn, GraphVertexPaneNode<V> graphVertexOut) {
+    private EdgeLineElement<E, V> createEdge(Edge<E, V> edge, UMLVertexNode<V> graphVertexIn, UMLVertexNode<V> graphVertexOut) {
         int edgeIndex = placedEdges.getOrDefault(edge, 0);
         EdgeLineElement<E, V> graphEdge;
         if (getTotalEdgesBetween(graphVertexIn.getUnderlyingVertex(), graphVertexOut.getUnderlyingVertex()) > 1

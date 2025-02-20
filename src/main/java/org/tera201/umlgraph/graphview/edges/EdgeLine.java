@@ -1,7 +1,6 @@
 package org.tera201.umlgraph.graphview.edges;
 
-import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.vertices.GraphVertex;
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -20,21 +19,21 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
 
     private final Edge<E, V> underlyingEdge;
 
-    private final GraphVertex<V> inbound;
-    private final GraphVertex<V> outbound;
+    private final UMLVertexNode<V> inbound;
+    private final UMLVertexNode<V> outbound;
 
     private DefaultArrow attachedArrow = null;
 
-    public EdgeLine(Edge<E, V> edge, GraphVertex<V> inbound, GraphVertex<V> outbound) {
+    public EdgeLine(Edge<E, V> edge, UMLVertexNode<V> inbound, UMLVertexNode<V> outbound) {
         if( inbound == null || outbound == null) {
             throw new IllegalArgumentException("Cannot connect null vertices.");
         }
 
         this.inbound = inbound;
         this.outbound = outbound;
-        
+
         this.underlyingEdge = edge;
-        
+
         switch (edge.getArrowsType()) {
             case DEPENDENCY, REALIZATION:
                 addStyleClass("edge-dash");
@@ -86,11 +85,7 @@ public class EdgeLine<E, V> extends Line implements EdgeLineElement<E, V> {
         ));
         
         arrow.getTransforms().add(rotation);
-        
-        /* add translation transform to put the arrow touching the circle's bounds */
-        Translate t = new Translate(- outbound.getRadius(), 0);
-        arrow.getTransforms().add(t);
-        
+
     }
 
     @Override
