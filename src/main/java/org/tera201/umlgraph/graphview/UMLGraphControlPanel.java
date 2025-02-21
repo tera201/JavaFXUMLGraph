@@ -13,16 +13,20 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
+
+import java.awt.*;
 
 public class UMLGraphControlPanel<V,E> extends BorderPane {
     private final UMLGraphPanel<V,E> graph;
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1);
     private final Slider slider = new Slider(MIN_SCALE, MAX_SCALE, MIN_SCALE);
-    private final VBox paneSlider = new VBox(slider, new Text("Zoom"));
-    private final HBox bottomPanel = new HBox(10);
+    private final VBox paneSlider = new VBox(slider);
+    Button resetPlaceButton = new Button("", new FontIcon(MaterialDesignR.RESTART));
+    Button resetView = new Button("", new FontIcon(MaterialDesignI.IMAGE_FILTER_CENTER_FOCUS));
 
     private static final double MIN_SCALE = 0.3;
     private static final double MAX_SCALE = 2;
@@ -32,15 +36,20 @@ public class UMLGraphControlPanel<V,E> extends BorderPane {
         this.graph = graph;
         setCenter(graph);
         setRight(updateSlider());
-        Button resetPlaceButton = new Button("Reset places");
         resetPlaceButton.setOnAction(e -> this.graph.resetPlaceStrategy());
-        Button resetView = new Button("Reset View");
         resetView.setOnAction(event -> resetView());
-
-        bottomPanel.getChildren().add(resetPlaceButton);
-        bottomPanel.getChildren().add(resetView);
-        setBottom(bottomPanel);
+        paneSlider.getChildren().add(resetPlaceButton);
+        paneSlider.getChildren().add(resetView);
         enablePanAndZoom();
+    }
+
+    public void setBackgroundColor(Color c) {
+        this.setStyle("-fx-background-color: rgb(%d, %d, %d);".formatted(c.getRed(), c.getGreen(), c.getBlue()));
+    }
+
+    public void setButtonColor(Color c) {
+        resetPlaceButton.setStyle("-fx-background-color: rgb(%d, %d, %d);".formatted(c.getRed(), c.getGreen(), c.getBlue()));
+        resetView.setStyle("-fx-background-color: rgb(%d, %d, %d);".formatted(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
     public void resetView() {
@@ -57,8 +66,6 @@ public class UMLGraphControlPanel<V,E> extends BorderPane {
             this.getChildren().add(graph);
             this.getChildren().remove(paneSlider);
             this.setRight(paneSlider);
-            this.getChildren().remove(bottomPanel);
-            this.setBottom(bottomPanel);
         });
     }
 

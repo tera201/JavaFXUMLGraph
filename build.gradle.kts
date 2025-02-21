@@ -18,6 +18,8 @@ repositories {
 
 dependencies {
     implementation("org.openjfx:javafx-controls:$javafxVersion")
+    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1")
 }
 
 javafx {
