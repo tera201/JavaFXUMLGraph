@@ -2,7 +2,7 @@ package org.tera201.umlgraph.graphview.vertices.elements;
 
 import javafx.scene.layout.Pane;
 
-public abstract class PaneElement extends Pane implements Element {
+public abstract class PaneElement extends Pane {
     private double width, height;
 
     public abstract void setSizeByHeight(double height);
@@ -11,17 +11,12 @@ public abstract class PaneElement extends Pane implements Element {
 
     protected abstract void updateSize();
 
-    @Override
     public abstract void addTo(Pane pane);
-    @Override
     public void setStyleClass(String cssClass) {
-        cleanStyleClass(cssClass);
+        clearStyleClass();
         addStyleClass(cssClass);
     }
-    @Override
     public abstract void addStyleClass(String cssClass);
-    @Override
-    public abstract void cleanStyleClass(String cssClass);
-    @Override
+    public abstract void clearStyleClass();
     public abstract boolean removeStyleClass(String cssClass);
 }

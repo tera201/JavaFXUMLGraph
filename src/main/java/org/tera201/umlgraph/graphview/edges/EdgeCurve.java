@@ -1,76 +1,42 @@
 package org.tera201.umlgraph.graphview.edges;
 
-import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
-import org.tera201.umlgraph.graphview.labels.Label;
-import org.tera201.umlgraph.graphview.StylableNode;
-import org.tera201.umlgraph.graphview.StyleProxy;
-import org.tera201.umlgraph.graphview.utils.UtilitiesBindings;
-import org.tera201.umlgraph.graphview.utils.UtilitiesPoint2D;
-import org.tera201.umlgraph.graphview.vertices.GraphVertex;
-import org.tera201.umlgraph.graphview.vertices.GraphVertexPaneNode;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import org.tera201.umlgraph.graph.Edge;
+import org.tera201.umlgraph.graphview.arrows.DefaultArrow;
+import org.tera201.umlgraph.graphview.vertices.UMLVertexNode;
 
-/**
- * Concrete implementation of a curved edge.
- * <br>
- * The edge binds its start point to the <code>outbound</code>
- * {@link GraphVertexPaneNode} center and its end point to the
- * <code>inbound</code> {@link GraphVertexPaneNode} center. As such, the curve
- * is updated automatically as the vertices move.
- * <br>
- * Given there can be several curved edges connecting two vertices, when calling
- * the constructor {@link #SmartGraphEdgeCurve(Edge,
- * GraphVertexPaneNode,
- * GraphVertexPaneNode, int) } the <code>edgeIndex</code>
- * can be specified as to create non-overlaping curves.
- *
- * @param <E> Type stored in the underlying edge
- * @param <V> Type of connecting vertex
- *
- * @author r.naryshkin99
- */
-public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
+public class EdgeCurve<E, V> extends CubicCurve implements EdgeLineElement<E, V> {
 
     private static final double MAX_EDGE_CURVE_ANGLE = 20;
 
     private final Edge<E, V> underlyingEdge;
 
-    private final GraphVertex<V> inbound;
-    private final GraphVertex<V> outbound;
+    private final UMLVertexNode<V> inbound;
+    private final UMLVertexNode<V> outbound;
 
-    private Label attachedLabel = null;
     private DefaultArrow attachedArrow = null;
 
     private double randomAngleFactor = 0;
-    
-    /* Styling proxy */
-    private final StyleProxy styleProxy;
 
-    public EdgeCurve(Edge<E, V> edge, GraphVertex inbound, GraphVertex outbound) {
-        this(edge, inbound, outbound, 0);
-    }
-
-    public EdgeCurve(Edge<E, V> edge, GraphVertex inbound, GraphVertex outbound, int edgeIndex) {
+    public EdgeCurve(Edge<E, V> edge, UMLVertexNode<V> inbound, UMLVertexNode<V> outbound, int edgeIndex) {
         this.inbound = inbound;
         this.outbound = outbound;
 
         this.underlyingEdge = edge;
 
-        styleProxy = new StyleProxy(this);
         switch (edge.getArrowsType()) {
             case DEPENDENCY, REALIZATION:
-                styleProxy.addStyleClass("edge-dash");
+                addStyleClass("edge-dash");
                 break;
-            default: styleProxy.addStyleClass("edge");
+            default: addStyleClass("edge");
         }
 
 
-        //bind start and end positions to vertices centers through properties
         this.startXProperty().bind(outbound.centerXProperty());
         this.startYProperty().bind(outbound.centerYProperty());
         this.endXProperty().bind(inbound.centerXProperty());
@@ -84,37 +50,33 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     }
 
     @Override
-    public void setStyleClass(String cssClass) {
-        styleProxy.setStyleClass(cssClass);
-    }
-
-    @Override
     public void addStyleClass(String cssClass) {
-        styleProxy.addStyleClass(cssClass);
+        this.getStyleClass().add(cssClass);
     }
 
     @Override
     public boolean removeStyleClass(String cssClass) {
-        return styleProxy.removeStyleClass(cssClass);
+        return this.getStyleClass().remove(cssClass);
     }
-    
-    private void update() {                
+
+    public void clearStyleClass() {
+        this.getStyleClass().clear();
+    }
+
+    private void update() {
         if (inbound == outbound) {
-            /* Make a loop using the control points proportional to the vertex radius */
-            
-            //TODO: take into account several "self-loops" with randomAngleFactor
-            double midpointX1 = outbound.getCenterX() - inbound.getRadius() * 5;
-            double midpointY1 = outbound.getCenterY() - inbound.getRadius() * 2;
-            
-            double midpointX2 = outbound.getCenterX() + inbound.getRadius() * 5;
-            double midpointY2 = outbound.getCenterY() - inbound.getRadius() * 2;
-            
+            double midpointX1 = outbound.getCenterX() - inbound.getHeight() * 5;
+            double midpointY1 = outbound.getCenterY() - inbound.getHeight() * 2;
+
+            double midpointX2 = outbound.getCenterX() + inbound.getHeight() * 5;
+            double midpointY2 = outbound.getCenterY() - inbound.getHeight() * 2;
+
             setControlX1(midpointX1);
             setControlY1(midpointY1);
             setControlX2(midpointX2);
             setControlY2(midpointY2);
-            
-        } else {          
+
+        } else {
             /* Make a curved edge. The curve is proportional to the distance  */
             double midpointX = (outbound.getCenterX() + inbound.getCenterX()) / 2;
             double midpointY = (outbound.getCenterY() + inbound.getCenterY()) / 2;
@@ -124,16 +86,13 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
             Point2D startpoint = new Point2D(inbound.getCenterX(), inbound.getCenterY());
             Point2D endpoint = new Point2D(outbound.getCenterX(), outbound.getCenterY());
 
-            //TODO: improvement lower max_angle_placement according to distance between vertices
             double angle = MAX_EDGE_CURVE_ANGLE;
 
             double distance = startpoint.distance(endpoint);
 
-            //TODO: remove "magic number" 1500 and provide a distance function for the 
-            //decreasing angle with distance
             angle = angle - (distance / 1500 * angle);
 
-            midpoint = UtilitiesPoint2D.rotate(midpoint,
+            midpoint = rotate(midpoint,
                     startpoint,
                     (-angle) + randomAngleFactor * (angle - (-angle)));
 
@@ -165,18 +124,6 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     }
 
     @Override
-    public void attachLabel(Label label) {
-        this.attachedLabel = label;
-        label.xProperty().bind(controlX1Property().add(controlX2Property()).divide(2).subtract(label.getLayoutBounds().getWidth() / 2));
-        label.yProperty().bind(controlY1Property().add(controlY2Property()).divide(2).add(label.getLayoutBounds().getHeight() / 2));
-    }
-
-    @Override
-    public Label getAttachedLabel() {
-        return attachedLabel;
-    }
-
-    @Override
     public Edge<E, V> getUnderlyingEdge() {
         return underlyingEdge;
     }
@@ -185,38 +132,43 @@ public class EdgeCurve<E, V> extends CubicCurve implements EdgeBase<E, V> {
     public void attachArrow(DefaultArrow arrow) {
         this.attachedArrow = arrow;
 
-        /* attach arrow to line's endpoint */
-        arrow.translateXProperty().bind(endXProperty());
-        arrow.translateYProperty().bind(endYProperty());
+        DoubleBinding angle = atan2(endYProperty().subtract(controlY2Property()),
+                endXProperty().subtract(controlX2Property()));
+        DoubleBinding dx = inbound.widthProperty().divide(2).divide(abs(cos(angle)));
+        DoubleBinding dy = inbound.heightProperty().divide(2).divide(abs(sin(angle)));
+        DoubleBinding t = min(dx, dy);
+        arrow.translateXProperty().bind(inbound.centerXProperty().subtract(t.multiply(cos(angle))));
+        arrow.translateYProperty().bind(inbound.centerYProperty().subtract(t.multiply(sin(angle))));
+
 
         /* rotate arrow around itself based on this line's angle */
         Rotate rotation = new Rotate();
         rotation.pivotXProperty().bind(translateXProperty());
         rotation.pivotYProperty().bind(translateYProperty());
-        rotation.angleProperty().bind(UtilitiesBindings.toDegrees(
-                UtilitiesBindings.atan2(endYProperty().subtract(controlY2Property()),
-                        endXProperty().subtract(controlX2Property()))
-        ));
+        rotation.angleProperty().bind(toDegrees(angle));
 
         arrow.getTransforms().add(rotation);
-
-        /* add translation transform to put the arrow touching the circle's bounds */
-        Translate t = new Translate(-outbound.getRadius(), 0);
-        arrow.getTransforms().add(t);
     }
 
     @Override
     public DefaultArrow getAttachedArrow() {
         return this.attachedArrow;
     }
-    
-    @Override
-    public StylableNode getStylableArrow() {
-        return this.attachedArrow;
-    }
 
-    @Override
-    public StylableNode getStylableLabel() {
-        return this.attachedLabel;
+    public static Point2D rotate(final Point2D point, final Point2D pivot, double angle_degrees) {
+        double angle = Math.toRadians(angle_degrees); //angle_degrees * (Math.PI/180); //to radians
+
+        double sin = Math.sin(angle);
+        double cos = Math.cos(angle);
+
+        Point2D result = point.subtract(pivot);
+
+        Point2D rotatedOrigin = new Point2D(
+                result.getX() * cos - result.getY() * sin,
+                result.getX() * sin + result.getY() * cos);
+
+        result = rotatedOrigin.add(pivot);
+
+        return result;
     }
 }
