@@ -10,14 +10,13 @@ java {
 group = "org.tera201"
 version = "0.0.2-SNAPSHOT"
 
-val javafxVersion = "20"
+val javafxVersion = "21"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.openjfx:javafx-controls:$javafxVersion")
     implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
     implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1")
 }
