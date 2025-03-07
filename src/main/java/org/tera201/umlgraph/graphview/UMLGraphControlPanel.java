@@ -10,6 +10,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -33,9 +34,13 @@ public class UMLGraphControlPanel<V,E> extends BorderPane {
     private static final double SCROLL_DELTA = 0.05;
 
     public UMLGraphControlPanel(UMLGraphPanel<V,E> graph) {
+        Tooltip resetTooltip = new Tooltip("Reset the graph elements to their starting positions.");
+        Tooltip defaultViewTooltip = new Tooltip("Return the view to its default position.");
         this.graph = graph;
         setCenter(graph);
         setRight(updateSlider());
+        resetView.setTooltip(defaultViewTooltip);
+        resetPlaceButton.setTooltip(resetTooltip);
         resetPlaceButton.setOnAction(e -> this.graph.resetPlaceStrategy());
         resetView.setOnAction(event -> resetView());
         paneSlider.getChildren().add(resetPlaceButton);
