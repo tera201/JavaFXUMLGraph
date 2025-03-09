@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
-    id("org.openjfx.javafxplugin") version "0.0.14"
+    kotlin("jvm") version "2.1.0"
+    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 java {
@@ -8,7 +8,7 @@ java {
 }
 
 group = "org.tera201"
-version = "0.0.2-SNAPSHOT"
+version = "1.0.0"
 
 val javafxVersion = "21"
 
